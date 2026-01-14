@@ -1,0 +1,321 @@
+/* ----------------------------------------------------
+   SAYFA LAYOUT & BAŞLIK
+---------------------------------------------------- */
+
+.page-two-column {
+    display: grid;
+    grid-template-columns: 3fr 1.2fr;
+    gap: 2rem;
+    margin-top: 1.5rem;
+}
+
+@media (max-width: 992px) {
+    .page-two-column {
+        grid-template-columns: 1fr;
+    }
+}
+
+.page-title {
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin-bottom: 0.3rem;
+}
+
+.page-subtitle {
+    font-size: 0.98rem;
+    color: var(--text-muted);
+    margin-bottom: 1.2rem;
+}
+
+/* ----------------------------------------------------
+   FİLTRE VE ARAMA
+---------------------------------------------------- */
+
+.ann-filter-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.7rem;
+}
+
+.filter-pills {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.filter-pill {
+    border: none;
+    outline: none;
+    padding: 6px 11px;
+    border-radius: 999px;
+    background: #e5edff;
+    color: #1d4ed8;
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.filter-pill.active {
+    background: #1d4ed8;
+    color: #ffffff;
+}
+
+.search-input-wrapper {
+    margin-bottom: 1.1rem;
+}
+
+.search-input {
+    border-radius: 999px;
+    border: 1px solid #d4d4d8;
+    padding: 0.55rem 0.9rem;
+    font-size: 0.9rem;
+}
+
+/* ----------------------------------------------------
+   DUYURU KARTLARI
+---------------------------------------------------- */
+
+.news-card.ann-card {
+    background: #ffffff;
+    border-radius: 20px;
+    box-shadow: var(--shadow-soft);
+    margin-bottom: 1rem;
+    overflow: hidden;
+}
+
+.news-card-inner {
+    padding: 1rem 1.3rem 1.1rem;
+}
+
+.news-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+/* Kategori badge */
+
+.ann-category-row {
+    margin-bottom: 0.3rem;
+}
+
+.ann-category-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.ann-cat-akademik {
+    background: #e0f2fe;
+    color: #0369a1;
+}
+
+.ann-cat-exam {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+.ann-cat-burs {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+/* Meta satırı */
+
+.ann-meta-top {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7rem;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-bottom: 0.2rem;
+}
+
+.ann-meta-top i {
+    margin-right: 4px;
+}
+
+/* Başlık ve açıklama */
+
+.news-title {
+    font-size: 1.1rem;
+    margin: 0.1rem 0 0.2rem;
+    color: #111827;
+}
+
+.news-desc {
+    font-size: 0.9rem;
+    color: #4b5563;
+}
+
+/* Chipler */
+
+.chip-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 0.3rem;
+}
+
+.badge-chip {
+    padding: 3px 8px;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    background: #f3f4f6;
+    color: #4b5563;
+}
+
+/* Aksiyon butonları */
+
+.ann-actions {
+    margin-top: 0.7rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+/* ----------------------------------------------------
+   PAGINATION
+---------------------------------------------------- */
+
+.pagination-custom {
+    display: flex;
+    gap: 0.4rem;
+    margin-top: 1rem;
+}
+
+.pagination-custom button {
+    border-radius: 999px;
+    border: 1px solid #e5e7eb;
+    background: #fff;
+    padding: 4px 10px;
+    font-size: 0.85rem;
+    cursor: pointer;
+}
+
+.pagination-custom button.active {
+    background: #1d4ed8;
+    color: #fff;
+    border-color: #1d4ed8;
+}
+
+/* ----------------------------------------------------
+   SAĞ TARAF / SIDEBAR
+---------------------------------------------------- */
+
+.side-card {
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 1.1rem 1.3rem;
+    margin-bottom: 1.4rem;
+    box-shadow: var(--shadow-soft);
+}
+
+.side-card h3 {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: #1f2937;
+}
+
+/* Önemli tarihler listesi */
+
+.date-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.date-list li {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.6rem;
+}
+
+.date-pill {
+    padding: 3px 8px;
+    border-radius: 999px;
+    background: #eef2ff;
+    color: #1d4ed8;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.date-text {
+    font-size: 0.85rem;
+    color: #4b5563;
+}
+
+/* Basit listeler */
+
+.simple-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.simple-list li {
+    font-size: 0.9rem;
+    color: #4b5563;
+    margin-bottom: 0.5rem;
+}
+
+/* Link listesi */
+
+.link-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.link-list li {
+    margin-bottom: 0.5rem;
+}
+
+.link-list a {
+    font-size: 0.9rem;
+    color: #2563eb;
+    text-decoration: none;
+}
+
+.link-list a:hover {
+    text-decoration: underline;
+}
+
+/* Bullet list */
+
+.bullet-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.bullet-list li {
+    font-size: 0.9rem;
+    color: #4b5563;
+    margin-bottom: 0.5rem;
+    position: relative;
+    padding-left: 14px;
+}
+
+.bullet-list li::before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: #2563eb;
+}
+
+/* Responsive */
+
+@media (max-width: 768px) {
+    .ann-filter-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}

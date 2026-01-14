@@ -1,134 +1,158 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Etkinlikler | UniNews{% endblock %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/etkinlikler.css' %}">
+{% endblock %}
+
 {% block content %}
+<div class="page-two-column">
+    <section>
+        <h1 class="page-title">Etkinlikler</h1>
+        <p class="page-subtitle">Konserler, seminerler, atölyeler ve tüm kampüs etkinlikleri.</p>
 
-<section class="mb-4">
-    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
-        <div>
-            <h1 class="h3 fw-bold mb-1">Etkinlikler</h1>
-            <p class="text-muted small mb-0">
-                Konserler, seminerler, atölyeler ve tüm kampüs etkinlikleri.
-            </p>
+        <div class="gundem-filter-row">
+            <span class="small text-muted">Tüm etkinlikler listeleniyor</span>
+            <div class="filter-pills">
+                <button class="filter-pill active" type="button">Tümü</button>
+                <button class="filter-pill" type="button">Bu Hafta</button>
+                <button class="filter-pill" type="button">Bu Ay</button>
+                <button class="filter-pill" type="button">Sadece Çevrim İçi</button>
+            </div>
         </div>
-        <div class="d-flex flex-wrap gap-2">
-            <button class="btn btn-uninews-soft btn-sm">Tümü</button>
-            <button class="btn btn-outline-uninews btn-sm">Bu Hafta</button>
-            <button class="btn btn-outline-uninews btn-sm">Bu Ay</button>
-            <button class="btn btn-outline-uninews btn-sm">Sadece Çevrim İçi</button>
+
+        <div class="search-input-wrapper mb-3 d-flex gap-2">
+            <input type="text" class="search-input flex-grow-1" placeholder="Etkinlik veya kulüp ara...">
+            <button class="btn-secondary-custom" type="button">Filtre</button>
         </div>
-    </div>
-</section>
 
-<div class="row g-4">
-    <div class="col-lg-8">
-
-        <!-- Burayı Django for döngüsü ile dinamik yapabilirsin -->
-
-        <!-- Örnek Etkinlik Kartı 1 -->
-        <article class="news-card card mb-3">
-            <div class="row g-0 align-items-center">
-                <div class="col-sm-4">
-                    <div class="news-thumb">
-                        <img src="https://images.pexels.com/photos/167636/pexels-photo-167636.jpeg"
-                             class="img-fluid h-100 object-fit-cover" alt="Etkinlik">
-                    </div>
+        {% for post in posts %}
+        <article class="news-card event-card-modern">
+            <div class="event-media">
+                {% if post.cover %}
+                    <img src="{{ post.cover.url }}" class="event-media-img" alt="">
+                {% else %}
+                    <img src="https://picsum.photos/seed/event{{ post.pk }}/900/450" class="event-media-img" alt="">
+                {% endif %}
+                <div class="event-media-chip">
+                    <span class="chip-label">ETKİNLİK</span>
                 </div>
-                <div class="col-sm-8">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center mb-1">
-                            <span class="badge category-badge event">Etkinlik</span>
-                            <small class="text-muted">
-                                <i class="bi bi-calendar-event me-1"></i> 15 Nisan 2025 • 19:00
-                            </small>
-                        </div>
-                        <h5 class="card-title mb-1">Bahar Şenliği Açılış Konseri</h5>
-                        <p class="card-text small text-muted mb-2">
-                            Ana sahnede DJ performansı, ardından sürpriz grup konserleri ve gece boyunca sürecek aktiviteler...
-                        </p>
-                        <div class="d-flex justify-content-between align-items-center small">
-                            <div class="d-flex align-items-center gap-2">
-                                <span><i class="bi bi-geo-alt me-1"></i> Merkezi Kampüs - Açık Alan</span>
-                            </div>
-                            <a href="#" class="stretched-link text-decoration-none fw-semibold read-more">
-                                Detaylar <i class="bi bi-arrow-right-short"></i>
-                            </a>
-                        </div>
+            </div>
+
+            <div class="event-body">
+                <div class="event-body-top">
+                    <span class="event-tag">Etkinlik</span>
+                    <span class="event-datetime">
+                        <i class="bi bi-calendar3"></i> {{ post.created_at|date:"d F Y" }}
+                        <span class="dot">•</span>
+                        <i class="bi bi-clock"></i> {{ post.created_at|date:"H:i" }}
+                    </span>
+                </div>
+
+                <h2 class="event-title">{{ post.title }}</h2>
+
+                <div class="event-organizer-row">
+                    <span class="event-organizer">
+                        <i class="bi bi-people-fill"></i> @{{ post.author.username }}
+                    </span>
+                    <span class="event-location">
+                        <i class="bi bi-geo-alt"></i> Kampüs
+                    </span>
+                </div>
+
+                <p class="event-desc">
+                    {{ post.content|truncatechars:170 }}
+                </p>
+
+                <div class="event-body-bottom">
+                    <div class="event-stats">
+                        <span><i class="bi bi-eye"></i> {{ post.views.count }} görüntülenme</span>
+                        <span><i class="bi bi-heart"></i> {{ post.likes.count }} beğeni</span>
                     </div>
+
+                    <a href="{% url 'post_detail' post.pk %}" class="event-action">
+                        Detaylar
+                        <i class="bi bi-arrow-right-short"></i>
+                    </a>
                 </div>
             </div>
         </article>
-
-        <!-- Örnek Etkinlik Kartı 2 -->
-        <article class="news-card card mb-3">
-            <div class="row g-0 align-items-center">
-                <div class="col-sm-4">
-                    <div class="news-thumb">
-                        <img src="https://images.pexels.com/photos/1181400/pexels-photo-1181400.jpeg"
-                             class="img-fluid h-100 object-fit-cover" alt="Seminer">
-                    </div>
-                </div>
-                <div class="col-sm-8">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center mb-1">
-                            <span class="badge category-badge event">Etkinlik</span>
-                            <small class="text-muted">
-                                <i class="bi bi-calendar-event me-1"></i> 20 Nisan 2025 • 14:00
-                            </small>
-                        </div>
-                        <h5 class="card-title mb-1">Girişimcilik ve Start-Up Söyleşisi</h5>
-                        <p class="card-text small text-muted mb-2">
-                            Mezunlarımızdan kurduğu girişimleriyle başarı yakalamış konuklar, deneyimlerini paylaşacak...
-                        </p>
-                        <div class="d-flex justify-content-between align-items-center small">
-                            <div class="d-flex align-items-center gap-2">
-                                <span><i class="bi bi-geo-alt me-1"></i> İİBF Konferans Salonu</span>
-                            </div>
-                            <a href="#" class="stretched-link text-decoration-none fw-semibold read-more">
-                                Detaylar <i class="bi bi-arrow-right-short"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
+        {% empty %}
+            <div class="dash-card" style="margin-top:16px;">
+                Henüz etkinlik içeriği yok.
             </div>
-        </article>
+        {% endfor %}
 
-        <!-- Sayfalama -->
-        <nav aria-label="Sayfalama" class="mt-4">
-            <ul class="pagination pagination-sm justify-content-center">
-                <li class="page-item disabled">
-                    <a class="page-link" href="#" tabindex="-1">Önceki</a>
+        <div class="pagination-custom">
+            <button type="button">Önceki</button>
+            <button type="button" class="active">1</button>
+            <button type="button">2</button>
+            <button type="button">3</button>
+            <button type="button">Sonraki</button>
+        </div>
+    </section>
+
+    <aside>
+        <section class="side-card">
+            <h3>Bugünün Etkinlikleri</h3>
+            <ul class="event-mini-list">
+                <li>
+                    <span class="mini-date">
+                        <span class="day">05</span>
+                        <span class="month">ARA</span>
+                    </span>
+                    <div class="mini-info">
+                        <p class="mini-title">Kariyer Merkezi Tanıtımı</p>
+                        <p class="mini-meta">13:00 • Kariyer Merkezi</p>
+                    </div>
                 </li>
-                <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item">
-                    <a class="page-link" href="#">Sonraki</a>
+                <li>
+                    <span class="mini-date">
+                        <span class="day">05</span>
+                        <span class="month">ARA</span>
+                    </span>
+                    <div class="mini-info">
+                        <p class="mini-title">Erasmus Bilgilendirme Toplantısı</p>
+                        <p class="mini-meta">16:00 • Online</p>
+                    </div>
                 </li>
             </ul>
-        </nav>
-    </div>
+        </section>
 
-    <div class="col-lg-4">
-        <div class="card mb-4 sidebar-card">
-            <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center">
-                <h6 class="mb-0 fw-bold">Yaklaşan Etkinlikler</h6>
-                <i class="bi bi-calendar2-week text-orange"></i>
+        <section class="side-card">
+            <h3>Kategori Etiketleri</h3>
+            <div class="tag-list event-tags">
+                <span>#konser</span>
+                <span>#söyleşi</span>
+                <span>#atölye</span>
+                <span>#spor</span>
+                <span>#kariyer</span>
+                <span>#online</span>
+                <span>#kulüpfest</span>
             </div>
-            <div class="list-group list-group-flush small">
-                <a href="#" class="list-group-item list-group-item-action">
-                    Kariyer Günleri 2025
-                </a>
-                <a href="#" class="list-group-item list-group-item-action">
-                    Kulüpler Tanıtım Günü
-                </a>
-                <a href="#" class="list-group-item list-group-item-action">
-                    Bahar Spor Turnuvaları
-                </a>
-            </div>
-        </div>
-    </div>
+        </section>
+
+        <section class="side-card">
+            <h3>En Aktif Kulüpler</h3>
+            <ul class="simple-list club-list">
+                <li>Girişimcilik Kulübü</li>
+                <li>Bilgisayar ve Yazılım Kulübü</li>
+                <li>Fotoğrafçılık Topluluğu</li>
+                <li>Müzik ve Sahne Sanatları Kulübü</li>
+            </ul>
+        </section>
+
+        <section class="side-card">
+            <h3>Etkinlik İpuçları</h3>
+            <ul class="bullet-list">
+                <li>Çoğu etkinlik için öğrenci kartını yanında bulundur.</li>
+                <li>Kontenjanlı etkinliklere önceden kayıt yaptır.</li>
+                <li>Online etkinliklerde bağlantı linki e-posta ile gelir.</li>
+                <li>Etkinlik sonrası geri bildirim formunu doldurmayı unutma.</li>
+            </ul>
+        </section>
+    </aside>
 </div>
-
 {% endblock %}

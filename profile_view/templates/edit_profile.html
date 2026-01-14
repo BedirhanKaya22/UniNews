@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Profili Düzenle | UniNews{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/profile.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="un-container">
+  <div class="un-card">
+    <div class="un-card-head">
+      <h3>Profili Düzenle</h3>
+      <span class="un-muted">Avatar, üniversite, bölüm ve bildirim ayarları</span>
+    </div>
+
+    <form method="post" enctype="multipart/form-data" class="un-form">
+      {% csrf_token %}
+      {{ form.non_field_errors }}
+
+      <div class="un-form-grid">
+        <div class="un-field">
+          <label>Mevcut Avatar</label>
+          <div class="un-avatar un-avatar-lg">
+            {% if profile.avatar %}
+              <img src="{{ profile.avatar.url }}" alt="Avatar">
+            {% else %}
+              <div class="un-avatar-fallback">{{ request.user.username|first|upper }}</div>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="un-field">
+          <label>Yeni Avatar</label>
+          {{ form.avatar }}
+          {{ form.avatar.errors }}
+          <div class="un-muted">PNG/JPG önerilir.</div>
+        </div>
+
+        <div class="un-field">
+          <label>Üniversite</label>
+          {{ form.university }}
+          {{ form.university.errors }}
+        </div>
+
+        <div class="un-field">
+          <label>Bölüm</label>
+          {{ form.department }}
+          {{ form.department.errors }}
+        </div>
+
+        <div class="un-field un-span-2">
+          <label>Bildirimler</label>
+          <div class="un-check">
+            {{ form.notifications_enabled }}
+            <span>Bildirimleri açık tut</span>
+          </div>
+          {{ form.notifications_enabled.errors }}
+        </div>
+      </div>
+
+      <div class="un-row">
+        <a class="un-btn un-btn-soft" href="{% url 'profile_view' %}">
+          <i class="bi bi-arrow-left"></i> Geri
+        </a>
+        <button class="un-btn un-btn-primary" type="submit">
+          <i class="bi bi-check2"></i> Kaydet
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

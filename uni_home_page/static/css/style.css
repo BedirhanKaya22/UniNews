@@ -1,485 +1,680 @@
-/* Renk paleti:
-   Turuncu: #ff7a00
-   Koyu turuncu: #e66700
-   Açık gri: #f5f5f5
-   Orta gri: #d3d3d3
-   Koyu gri: #2a2a2a
-*/
-
 :root {
-    --orange: #ff7a00;
-    --orange-dark: #e66700;
-    --gray-light: #f5f5f5;
-    --gray-mid: #d3d3d3;
-    --gray-dark: #2a2a2a;
-    --card-radius: 1rem;
-    --transition-fast: 0.2s ease-in-out;
+    --bg-body: #F1F5F9;
+    --bg-card: #FFFFFF;
+    --text-main: #0F172A;
+    --text-muted: #475569;
+
+    --accent: #2563EB;
+    --accent-dark: #1D4ED8;
+    --accent-soft: #DBEAFE;
+
+    --border-soft: #E2E8F0;
+    --shadow-soft: 0 12px 30px rgba(15, 23, 42, 0.06);
+
+    --radius-lg: 18px;
+    --radius-pill: 999px;
+
+    --badge-blue: #2563EB;
+    --badge-green: #16A34A;
+    --badge-yellow: #FBBF24;
+    --badge-purple: #8B5CF6;
+
+    --font-main: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
-.uninews-body {
-    background: radial-gradient(circle at top left, #ffffff 0, #ffffff 40%, #f7f7f7 70%, #ececec 100%);
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+/* Genel reset */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
 }
 
-/* Topbar */
+/* =========================================
+   GLOBAL ANİMASYONLU KAMPÜS BACKGROUND
+   (Tüm sayfalarda geçerli)
+========================================= */
+
+html,
+body {
+    height: 100%;
+}
+
+body.uninews-body {
+    position: relative;
+    overflow-x: hidden;
+    /* Arka plan rengi kaldırıldı, yerine animasyonlu gradient geliyor */
+    background: transparent;
+    color: var(--text-main);
+    font-family: var(--font-main);
+}
+
+/* Arka planda hareket eden yumuşak gradientler */
+body.uninews-body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+
+    /* Açık, kampüs havası veren baloncuklu gradient */
+    background:
+        radial-gradient(circle at 0% 0%, rgba(37, 99, 235, 0.25), transparent 60%),
+        radial-gradient(circle at 100% 100%, rgba(56, 189, 248, 0.22), transparent 60%),
+        radial-gradient(circle at 100% 0%, rgba(147, 51, 234, 0.18), transparent 60%),
+        radial-gradient(circle at 0% 100%, rgba(34, 197, 94, 0.16), transparent 60%),
+        #f3f4ff;
+
+    background-size: 160% 160%;
+    animation: uninews-bg-move 30s ease-in-out infinite alternate;
+}
+
+/* Çok hafif hareket animasyonu */
+@keyframes uninews-bg-move {
+    0% {
+        transform: translate3d(0, 0, 0);
+    }
+    50% {
+        transform: translate3d(-40px, 20px, 0);
+    }
+    100% {
+        transform: translate3d(40px, -20px, 0);
+    }
+}
+
+/* Hareketten rahatsız olan kullanıcılar için animasyonu kapat */
+@media (prefers-reduced-motion: reduce) {
+    body.uninews-body::before {
+        animation: none;
+        background-position: center;
+    }
+}
+
+/* Top bar */
 .topbar {
-    background: #2f2f2f;
-    color: #f1f1f1;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    font-size: 0.8rem;
+    background: #020617;
+    color: #E5E7EB;
+    font-size: 12px;
 }
 
 .topbar-link {
-    color: #f1f1f1;
+    color: #E5E7EB;
+    text-decoration: none;
 }
 
 .topbar-link:hover {
-    color: var(--orange);
+    text-decoration: underline;
 }
 
 /* Navbar */
-.uninews-navbar {
-    background: rgba(255, 255, 255, 0.9);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid #ececec;
+.main-nav {
+    background: #ffffff;
+    border-bottom: 1px solid var(--border-soft);
+    position: sticky;
+    top: 0;
+    z-index: 30;
 }
 
-.uninews-navbar .navbar-brand {
-    color: #222;
-    font-size: 1.2rem;
+.nav-inner {
+    height: 64px;
+    gap: 18px;
 }
 
-.uninews-navbar .navbar-brand:hover {
-    color: var(--orange);
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-main);
 }
 
-.logo-circle {
-    width: 32px;
-    height: 32px;
-    border-radius: 999px;
-    background: linear-gradient(135deg, var(--orange), var(--orange-dark));
+.logo-icon {
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #fff;
 }
 
-/* Nav pill linkler */
-.nav-pill {
-    border-radius: 999px;
-    padding-inline: 1rem !important;
-    font-size: 0.85rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: #555;
+/* Yeni logo görseli */
+.logo-icon img {
+    width: 32px;   /* İstersen 28–40 arasında oynayabilirsin */
+    height: auto;
+    display: block;
 }
 
-.nav-pill.active,
-.nav-pill:hover {
-    background: rgba(255, 122, 0, 0.1);
-    color: var(--orange) !important;
+.logo-text {
+    font-weight: 700;
+    font-size: 20px;
 }
 
-/* Search box */
-.search-box {
-    background: #f2f2f2;
-    border-radius: 999px;
-    padding: 0.25rem 0.75rem;
-    border: 1px solid transparent;
-    font-size: 0.85rem;
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 16px;
 }
 
-.search-box i {
-    color: #888;
+.nav-links a {
+    font-size: 14px;
+    color: var(--text-muted);
+    padding: 6px 10px;
+    border-radius: var(--radius-pill);
+    text-decoration: none;
+    transition: 0.2s ease;
 }
 
-.search-box .search-input {
-    border: none;
-    background: transparent;
-    font-size: 0.85rem;
-    box-shadow: none;
+.nav-links a:hover {
+    background: #E5E7EB;
+    color: var(--text-main);
 }
 
-.search-box .search-input:focus {
+.nav-links a.active {
+    background: var(--accent-soft);
+    color: var(--accent-dark);
+    font-weight: 600;
+}
+
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.search-input {
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--border-soft);
+    padding: 6px 12px;
+    font-size: 13px;
+    min-width: 180px;
     outline: none;
-    box-shadow: none;
 }
 
-.search-box:focus-within {
-    border-color: var(--orange);
+.search-input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.35);
 }
 
-/* UniNews butonları */
-.btn-uninews {
-    background: var(--orange);
-    border-color: var(--orange);
-    color: #fff;
-    border-radius: 999px;
+/* Butonlar */
+.btn-primary-custom,
+.btn-secondary-custom,
+.btn-outline {
+    border-radius: var(--radius-pill);
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 8px 16px;
     font-weight: 500;
+    transition: 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.btn-uninews:hover {
-    background: var(--orange-dark);
-    border-color: var(--orange-dark);
+.btn-primary-custom {
+    background: var(--accent);
     color: #fff;
+    box-shadow: var(--shadow-soft);
 }
 
-.btn-outline-uninews {
+.btn-primary-custom:hover {
+    background: var(--accent-dark);
+    transform: translateY(-1px);
+}
+
+.btn-secondary-custom {
+    background: #EFF6FF;
+    color: #1D4ED8;
+}
+
+.btn-secondary-custom:hover {
+    background: #DBEAFE;
+}
+
+.btn-outline {
     background: transparent;
-    border-color: var(--orange);
-    color: var(--orange);
-    border-radius: 999px;
-    font-weight: 500;
+    border: 1px solid var(--accent);
+    color: var(--accent-dark);
+    text-decoration: none;
 }
 
-.btn-outline-uninews:hover {
-    background: var(--orange);
-    color: #fff;
+.btn-outline:hover {
+    background: var(--accent-soft);
 }
 
-.btn-uninews-soft {
-    background: rgba(255, 122, 0, 0.08);
-    color: var(--orange);
-    border: 1px solid rgba(255, 122, 0, 0.2);
-    border-radius: 999px;
+/* Ana layout */
+.page {
+    padding: 22px 0 32px;
 }
 
-.btn-uninews-soft:hover {
-    background: rgba(255, 122, 0, 0.16);
+.page-two-column {
+    display: grid;
+    grid-template-columns: minmax(0, 2.2fr) minmax(0, 1.1fr);
+    gap: 24px;
 }
 
-/* HERO ALANI */
-.hero-section {
-    margin-top: 0.5rem;
-}
-
+/* Hero */
 .hero-card {
-    background: linear-gradient(135deg, #ffffff, #fff6ec);
-    border-radius: 1.4rem;
-    padding: 1.9rem;
-    border: 1px solid #f0e0d1;
-    box-shadow: 0 16px 30px rgba(0, 0, 0, 0.04);
-    position: relative;
-    overflow: hidden;
-}
-
-.hero-card::after {
-    content: "";
-    position: absolute;
-    right: -60px;
-    top: -60px;
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(255, 122, 0, 0.25), transparent 60%);
-    opacity: 0.9;
+    background: radial-gradient(circle at top left, #EFF6FF, #FFFFFF);
+    border-radius: 26px;
+    padding: 22px 24px 18px;
+    box-shadow: var(--shadow-soft);
+    margin-bottom: 20px;
 }
 
 .hero-badge {
     display: inline-flex;
     align-items: center;
-    gap: 0.3rem;
-    padding: 0.25rem 0.75rem;
-    border-radius: 999px;
-    background: rgba(255, 122, 0, 0.1);
-    color: var(--orange);
-    font-size: 0.8rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.09em;
+    gap: 6px;
+    font-size: 11px;
+    padding: 3px 9px;
+    border-radius: var(--radius-pill);
+    border: 1px dashed #BFDBFE;
+    color: #1D4ED8;
+    margin-bottom: 8px;
 }
 
-.hero-title {
-    margin-top: 1rem;
-    font-size: 1.8rem;
-    font-weight: 800;
-    color: #222;
+.hero-card h1 {
+    font-size: 26px;
+    margin-bottom: 8px;
 }
 
-.hero-title span {
-    color: var(--orange);
+.hero-card .highlight {
+    color: var(--accent-dark);
 }
 
-.hero-text {
-    margin-top: 0.6rem;
-    font-size: 0.95rem;
-    color: #555;
+.hero-card p {
+    font-size: 14px;
+    color: var(--text-muted);
+    max-width: 440px;
+}
+
+.hero-actions {
+    display: flex;
+    gap: 10px;
+    margin: 12px 0 8px;
 }
 
 .hero-tags span {
-    padding: 0.2rem 0.7rem;
-    border-radius: 999px;
-    background: #fff;
-    border: 1px dashed #ffd2a3;
-    color: #555;
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: var(--radius-pill);
+    background: #E5E7EB;
+    color: #374151;
+    margin-right: 6px;
 }
 
-/* Hero sağ kart */
-.hero-side-card {
-    background: #fff;
-    border-radius: 1.2rem;
-    padding: 1.4rem;
-    border: 1px solid #eee;
-    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.03);
-}
-
-.hero-ticker li {
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
-    margin-bottom: 0.35rem;
-    color: #555;
-}
-
-.hero-ticker i {
-    color: var(--orange);
-}
-
-/* Öne çıkan haber kartı */
-.featured-article {
-    border-radius: 1.2rem;
-    border: 1px solid #eee;
-    overflow: hidden;
-    background: #fff;
-    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.04);
-}
-
-.featured-img-wrap {
-    height: 100%;
-    min-height: 220px;
-}
-
-.featured-article .card-body {
-    padding: 1.2rem;
-}
-
-.meta {
-    color: #888;
-}
-
-/* Haber kartları */
+/* Kartlar */
 .news-card {
-    border-radius: 1rem;
-    border: 1px solid #eee;
-    background: #fff;
-    transition: transform var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast);
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-soft);
+    margin-bottom: 18px;
     overflow: hidden;
 }
 
-.news-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.06);
-    border-color: rgba(255, 122, 0, 0.55);
-}
-
-.news-thumb {
-    height: 100%;
-    min-height: 140px;
-    overflow: hidden;
-}
-
-.news-thumb img {
-    transition: transform var(--transition-fast);
-}
-
-.news-card:hover .news-thumb img {
-    transform: scale(1.05);
-}
-
-/* Like butonu */
-.btn-like {
-    border-radius: 999px;
-    border: 1px solid #ffd2a3;
-    background: #fff;
-    color: #ff9f4b;
-}
-
-.btn-like:hover {
-    background: #ffefdf;
-}
-
-/* Kategori badge'leri */
-.category-badge {
-    background: rgba(255, 122, 0, 0.08);
-    color: var(--orange);
-    border-radius: 999px;
-    padding: 0.15rem 0.7rem;
-    font-size: 0.75rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.07em;
-    border: 1px solid rgba(255, 122, 0, 0.2);
-}
-
-.category-badge.event {
-    background: rgba(0, 171, 85, 0.08);
-    color: #009c57;
-    border-color: rgba(0, 171, 85, 0.2);
-}
-
-.category-badge.announcement {
-    background: rgba(255, 193, 7, 0.08);
-    color: #b28a00;
-    border-color: rgba(255, 193, 7, 0.2);
-}
-
-.category-badge.club {
-    background: rgba(124, 77, 255, 0.08);
-    color: #6d3cff;
-    border-color: rgba(124, 77, 255, 0.2);
-}
-
-/* Read more link */
-.read-more {
-    color: #444;
-}
-
-.read-more:hover {
-    color: var(--orange);
-}
-
-/* Sidebar kartları */
-.sidebar-card {
-    border-radius: 1rem;
-    border: 1px solid #eee;
-    background: #fff;
-    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.03);
-}
-
-.text-orange {
-    color: var(--orange) !important;
-}
-
-/* Tag bulutu */
-.tag-cloud {
+.news-card-inner {
     display: flex;
-    flex-wrap: wrap;
-    gap: 0.4rem;
+    flex-direction: row;
 }
 
-.tag-cloud a {
-    font-size: 0.8rem;
-    padding: 0.25rem 0.7rem;
-    border-radius: 999px;
-    background: #f5f5f5;
-    color: #555;
-    text-decoration: none;
-    border: 1px solid transparent;
-}
-
-.tag-cloud a:hover {
-    border-color: var(--orange);
-    color: var(--orange);
-    background: #fff;
-}
-
-/* Footer */
-.uninews-footer {
-    background: #1f1f1f;
-    color: #f5f5f5;
-    font-size: 0.9rem;
-}
-
-.uninews-footer h5,
-.uninews-footer h6 {
-    color: #ffffff;
-}
-
-.footer-link {
-    color: #e1e1e1;
-    text-decoration: none;
-}
-
-.footer-link:hover {
-    color: var(--orange);
-    text-decoration: underline;
-}
-
-/* Genel yardımcı sınıflar */
-.object-fit-cover {
+.news-image {
+    width: 40%;
     object-fit: cover;
 }
 
+.news-content {
+    padding: 18px 20px 18px 18px;
+    flex: 1;
+}
+
+.news-label {
+    display: inline-flex;
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: var(--radius-pill);
+    background: var(--accent-soft);
+    color: var(--accent-dark);
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.news-label.event {
+    background: #DCFCE7;
+    color: #166534;
+}
+
+.news-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.news-desc {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+}
+
+.news-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--text-muted);
+    align-items: center;
+}
+
+.read-more {
+    display: inline-flex;
+    margin-top: 8px;
+    font-size: 13px;
+    text-decoration: none;
+    color: var(--accent-dark);
+    font-weight: 500;
+}
+
+/* Sağ kolon kartları */
+.side-card {
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    padding: 16px 18px;
+    box-shadow: var(--shadow-soft);
+    margin-bottom: 18px;
+}
+
+.side-card h3 {
+    font-size: 15px;
+    margin-bottom: 10px;
+}
+
+.bullet-list {
+    list-style: none;
+    font-size: 13px;
+    color: var(--text-muted);
+    padding-left: 0;
+}
+
+.bullet-list li {
+    padding-left: 14px;
+    position: relative;
+    margin-bottom: 6px;
+}
+
+.bullet-list li::before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+}
+
+.tag-list span {
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: var(--radius-pill);
+    background: #E5E7EB;
+    color: #374151;
+    margin: 0 6px 6px 0;
+}
+
+.simple-list {
+    list-style: none;
+    font-size: 13px;
+    color: #111827;
+    padding-left: 0;
+}
+
+.simple-list li {
+    margin-bottom: 8px;
+}
+
+/* Filtre butonları */
+.filter-pills {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 6px;
+}
+
+.filter-pill {
+    font-size: 12px;
+    padding: 6px 12px;
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--border-soft);
+    background: #ffffff;
+    color: var(--text-muted);
+    cursor: pointer;
+}
+
+.filter-pill.active {
+    background: var(--accent);
+    border-color: transparent;
+    color: #ffffff;
+}
+
 /* Pagination */
-.pagination .page-link {
-    font-size: 0.8rem;
-    border-radius: 999px !important;
+.pagination-custom {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 18px;
+    font-size: 13px;
 }
 
-.pagination .page-item.active .page-link {
-    background-color: var(--orange);
-    border-color: var(--orange);
+.pagination-custom button {
+    padding: 6px 10px;
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--border-soft);
+    background: #ffffff;
+    cursor: pointer;
 }
 
-/* ========================= */
-/* AUTH SAYFALARI (Login/Kayıt/Şifre) */
-/* ========================= */
+.pagination-custom button.active {
+    background: var(--accent);
+    border-color: transparent;
+    color: #ffffff;
+}
 
-/* AUTH SAYFALARI (Login/Kayıt/Şifre) */
-.auth-section {
-    min-height: calc(100vh - 200px);
+/* Footer */
+footer {
+    background: #020617;
+    color: #E5E7EB;
+    padding: 20px 0;
+    font-size: 13px;
+}
+
+.footer-inner {
+    display: flex;
+    justify-content: space-between;
+    gap: 32px;
+    align-items: flex-start;
+}
+
+.footer-col-title {
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.footer-links {
+    list-style: none;
+    padding-left: 0;
+}
+
+.footer-links li {
+    margin-bottom: 4px;
+}
+
+.footer-links a {
+    color: #9CA3AF;
+    text-decoration: none;
+    font-size: 13px;
+}
+
+.footer-links a:hover {
+    text-decoration: underline;
+}
+
+.footer-text {
+    color: #9CA3AF;
+}
+
+/* Auth (login / register) */
+.full-page-center {
+    min-height: calc(100vh - 96px - 60px);
     display: flex;
     align-items: center;
-    justify-content: center;   /* EKLENDİ: yatayda da ortala */
+    justify-content: center;
 }
 
 .auth-card {
-    background: #ffffff;
-    border-radius: 1.4rem;
-    padding: 1.8rem 1.6rem;
-    border: 1px solid #eeeeee;
-    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.05);
-    max-width: 480px;          /* EKLENDİ: kartı makul genişlikte tut */
     width: 100%;
+    max-width: 420px;
+    background: var(--bg-card);
+    border-radius: 24px;
+    padding: 26px 26px 20px;
+    box-shadow: var(--shadow-soft);
 }
 
-.auth-card .form-control-sm {
-    border-radius: 0.8rem;
-    font-size: 0.85rem;
-}
-
-.auth-card .form-control-sm:focus {
-    box-shadow: 0 0 0 0.15rem rgba(255, 122, 0, 0.15);
-    border-color: var(--orange);
-}
-
-.auth-divider {
-    position: relative;
+.auth-title {
     text-align: center;
-    font-size: 0.75rem;
-    color: #999;
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 4px;
 }
 
-.auth-divider::before,
-.auth-divider::after {
+.auth-subtitle {
+    text-align: center;
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 18px;
+}
+
+.form-group-custom {
+    margin-bottom: 12px;
+    font-size: 13px;
+}
+
+.form-group-custom label {
+    display: block;
+    margin-bottom: 4px;
+    color: #4B5563;
+}
+
+.form-control-custom {
+    width: 100%;
+    padding: 8px 11px;
+    border-radius: 12px;
+    border: 1px solid var(--border-soft);
+    font-size: 13px;
+    outline: none;
+}
+
+.form-control-custom:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.25);
+}
+
+.form-inline-custom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    font-size: 12px;
+}
+
+.link-muted {
+    font-size: 12px;
+    color: var(--accent-dark);
+    text-decoration: none;
+}
+
+.btn-block {
+    width: 100%;
+    display: inline-flex;
+    justify-content: center;
+}
+
+.divider {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 14px 0;
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.divider::before,
+.divider::after {
     content: "";
-    position: absolute;
-    top: 50%;
-    width: 40%;
+    flex: 1;
     height: 1px;
-    background: #e0e0e0;
+    background: var(--border-soft);
 }
 
-.auth-divider::before {
-    left: 0;
+.text-center-small {
+    text-align: center;
+    font-size: 13px;
 }
 
-.auth-divider::after {
-    right: 0;
+/* Responsive */
+@media (max-width: 992px) {
+    .page-two-column {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .nav-inner {
+        flex-wrap: wrap;
+        height: auto;
+        padding: 8px 0;
+    }
+
+    .nav-links {
+        justify-content: center;
+        width: 100%;
+    }
+
+    .nav-right {
+        justify-content: flex-end;
+        width: 100%;
+    }
+
+    .news-card-inner {
+        flex-direction: column;
+    }
+
+    .news-image {
+        width: 100%;
+        height: 210px;
+    }
+
+    .footer-inner {
+        flex-direction: column;
+    }
+}
+.nav-user-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--text-main);
+    padding: 6px 10px;
+    border-radius: var(--radius-pill);
+    font-size: 14px;
+    text-decoration: none;
+    transition: 0.2s ease;
 }
 
-.auth-divider span {
-    background: #fff;
-    padding: 0 0.5rem;
-    position: relative;
-    z-index: 1;
+.nav-user-link:hover {
+    background: #E5E7EB;
 }
 
-.link-orange {
-    color: var(--orange);
+.nav-user-link.active {
+    background: var(--accent-soft);
+    color: var(--accent-dark);
+    font-weight: 600;
 }
-
-.link-orange:hover {
-    color: var(--orange-dark);
-    text-decoration: underline;
+/* THEME OVERRIDE: if LIVE layout is used, ignore old UNI navbar/footer colors */
+body.un-live .topbar,
+body.un-live .main-nav,
+body.un-live footer{
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+body.un-live .page-two-column{
+  /* eski grid'i kullanmıyoruz; live home kendi grid'i */
+  display:block;
 }

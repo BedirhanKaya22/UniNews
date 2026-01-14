@@ -1,0 +1,230 @@
+{# Ortak şablon olan base.html'i miras alır (navbar/footer vb.) #}
+{% extends "base.html" %}
+
+{# Static dosyaları (CSS/JS/img) kullanmak için yüklenir #}
+{% load static %}
+
+{# localtime filtresi gibi timezone işlemleri için tz taglerini yükler #}
+{% load tz %}
+
+{# Sayfa başlığını dinamik olarak post başlığı ile belirler #}
+{% block title %}{{ post.title }} | UniNews{% endblock %}
+
+{# Bu sayfaya özel CSS dosyalarını eklemek için kullanılan blok #}
+{% block extra_css %}
+    {# Post detay sayfasına özel stil dosyası #}
+    <link rel="stylesheet" href="{% static 'css/post_detail.css' %}">
+{% endblock %}
+
+{# Sayfanın ana içerik bloğu #}
+{% block content %}
+
+{# Kullanıcı admin/staff ise yönetici önizleme panelini göster #}
+{% if user.is_staff %}
+    <!-- Yöneticiye özel hızlı onay/red/düzenle alanı -->
+    <div class="dash-card" style="margin-bottom:16px;">
+        <strong>🛠 Yönetici Önizlemesi</strong>
+
+        <div style="margin-top:8px;">
+
+            <!-- Post durumunu insan okunur şekilde gösterir (choices display) -->
+            <span class="badge-chip">
+                Durum: {{ post.get_status_display }}
+            </span>
+
+            {# Post beklemede ise onayla/ret aksiyon butonları göster #}
+            {% if post.status == "PENDING" %}
+                <!-- Admin onay action linki -->
+                <a href="{% url 'admin_approve_post' post.pk %}" class="btn-primary-custom btn-xs">
+                    Onayla
+                </a>
+                <!-- Admin red action linki -->
+                <a href="{% url 'admin_reject_post' post.pk %}" class="btn-outline btn-xs">
+                    Reddet
+                </a>
+            {% endif %}
+
+            <!-- Admin düzenleme sayfasına giden link -->
+            <a href="{% url 'admin_edit_post' post.pk %}" class="btn-outline btn-xs">
+                Düzenle
+            </a>
+        </div>
+    </div>
+{% endif %}
+
+<!-- Sayfayı iki kolonlu düzende gösteren ana kapsayıcı (sol içerik + sağ sidebar) -->
+<div class="page-two-column">
+
+  <!-- Sol taraf: post içeriği -->
+  <section>
+
+    <!-- Post üst alanı (kapak + rozetler + başlık + yazar/tarih) -->
+    <div class="post-hero">
+
+      {# Postun kapak görseli varsa göster, yoksa boş placeholder göster #}
+      {% if post.cover %}
+        <!-- Kapak görselinin URL'ini modelin cover field'ından alır -->
+        <img class="post-cover" src="{{ post.cover.url }}" alt="">
+      {% else %}
+        <!-- Kapak yoksa tasarım bozulmasın diye boş alan -->
+        <div class="post-cover post-cover--empty"></div>
+      {% endif %}
+
+      <!-- Post kategorisi + durum rozetleri -->
+      <div class="post-hero-meta">
+
+        <!-- Kategori adını choices display ile insan okunur gösterir -->
+        <span class="badge-chip">{{ post.get_category_display }}</span>
+
+        {# Post status alanı doluysa durum rozetini göster #}
+        {% if post.status %}
+
+          {# Status'e göre rozet rengi/yazısı değişir #}
+          {% if post.status == "PENDING" %}
+            <span class="badge-chip badge-warn">Onay Bekliyor</span>
+          {% elif post.status == "REJECTED" %}
+            <span class="badge-chip badge-danger">Reddedildi</span>
+          {% elif post.status == "APPROVED" %}
+            <span class="badge-chip badge-ok">Onaylandı</span>
+          {% endif %}
+
+        {% endif %}
+      </div>
+
+      <!-- Post başlığı -->
+      <h1 class="post-title">{{ post.title }}</h1>
+
+      <!-- Yazar kullanıcı adı + oluşturulma tarihi -->
+      <div class="post-sub">
+        <!-- Yazarı @username formatında gösterir -->
+        <span class="post-author">@{{ post.author.username }}</span>
+
+        <!-- Küçük ayraç nokta -->
+        <span class="dot">•</span>
+
+        <!-- created_at alanını localtime ile yerel saate çevirip formatlar -->
+        <span class="post-date">{{ post.created_at|localtime|date:"d.m.Y H:i" }}</span>
+      </div>
+    </div>
+
+    {# Özet varsa (summary) özet metnini gösterir #}
+    {% if post.summary %}
+      <p class="post-summary">{{ post.summary }}</p>
+    {% endif %}
+
+    <!-- Post ana içerik alanı -->
+    <article class="post-content">
+      {# content içindeki satır sonlarını <p>/<br> gibi HTML'e çevirir #}
+      {{ post.content|linebreaks }}
+    </article>
+
+    <!-- Like/yorum istatistikleri + like butonu -->
+    <div class="post-actions">
+
+      <!-- Sol: sayısal istatistikler -->
+      <div class="post-stats">
+        <!-- Like sayısı -->
+        <span>❤️ {{ like_count }}</span>
+        <span class="dot">•</span>
+        <!-- Yorum sayısı: comments listesi uzunluğu -->
+        <span>💬 {{ comments|length }}</span>
+      </div>
+
+      <!-- Sağ: beğenme butonları -->
+      <div class="post-buttons">
+
+        {# Kullanıcı giriş yaptıysa like formu göster #}
+        {% if user.is_authenticated %}
+
+          <!-- Like toggle endpoint'ine POST atar (beğen/beğeniyi kaldır) -->
+          <form method="post" action="{% url 'toggle_like' post.pk %}">
+            {% csrf_token %}
+            <button class="btn-secondary-custom btn-sm" type="submit">
+              {# liked boolean'ına göre buton yazısını değiştirir #}
+              {% if liked %}Beğenildi{% else %}Beğen{% endif %}
+            </button>
+          </form>
+
+        {% else %}
+          <!-- Giriş yapmayan kullanıcıyı login sayfasına yönlendirir -->
+          <a class="btn-secondary-custom btn-sm" href="{% url 'login' %}">Beğenmek için giriş yap</a>
+        {% endif %}
+
+      </div>
+    </div>
+
+    <!-- Yorumlar kartı -->
+    <div class="dash-card" style="margin-top:16px;">
+      <h3>Yorumlar</h3>
+
+      {# Giriş yapan kullanıcı yorum yazabilsin #}
+      {% if user.is_authenticated %}
+
+        <!-- Yorum ekleme formu (POST) -->
+        <form class="comment-form" method="post" action="{% url 'add_comment' post.pk %}">
+          {% csrf_token %}
+
+          <!-- Yorum metni textarea -->
+          <textarea name="text" rows="3" class="form-control-custom" placeholder="Yorum yaz..."></textarea>
+
+          <!-- Gönder butonu -->
+          <button class="btn-primary-custom btn-sm" type="submit">Gönder</button>
+        </form>
+
+      {% else %}
+        <!-- Giriş yapmayan kullanıcıya uyarı -->
+        <div class="alert-custom alert-info">Yorum yapmak için giriş yapmalısın.</div>
+      {% endif %}
+
+      <!-- Yorum listesi -->
+      <div class="comment-list">
+
+        {# comments içindeki her yorumu tek tek basar #}
+        {% for c in comments %}
+
+          <!-- Tek yorum kutusu -->
+          <div class="comment-item">
+            <div class="comment-top">
+
+              <!-- Yorumu yazan kullanıcı -->
+              <strong>@{{ c.user.username }}</strong>
+
+              <!-- Yorum tarihi: localtime + format -->
+              <span class="comment-date">{{ c.created_at|localtime|date:"d.m.Y H:i" }}</span>
+            </div>
+
+            <!-- Yorum metni: satır sonlarını <br> yapar -->
+            <div class="comment-text">{{ c.text|linebreaksbr }}</div>
+          </div>
+
+        {% empty %}
+          <!-- Hiç yorum yoksa gösterilecek mesaj -->
+          <p class="muted">Henüz yorum yok.</p>
+        {% endfor %}
+
+      </div>
+    </div>
+
+  </section>
+
+  <!-- Sağ taraf: sidebar -->
+  <aside>
+    <section class="side-card">
+      <h3>Hızlı İşlemler</h3>
+
+  {% if request.user.is_staff %}
+    <!-- Admin dashboard'a dönüş linki -->
+    <a class="btn-outline btn-block" href="{% url 'admin_dashboard' %}">
+      Admin Paneline Dön
+    </a>
+  {% endif %}
+
+      <!-- Ana sayfaya dönüş linki -->
+      <a class="btn-outline btn-block" href="{% url 'home' %}">Ana Sayfa</a>
+    </section>
+  </aside>
+
+</div>
+
+{# content bloğu biter #}
+{% endblock %}

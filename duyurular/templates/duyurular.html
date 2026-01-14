@@ -1,274 +1,137 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 {% load static %}
 
 {% block title %}Duyurular | UniNews{% endblock %}
 
 {% block extra_css %}
-    <link rel="stylesheet" href="{% static 'css/duyurular.css' %}">
+<link rel="stylesheet" href="{% static 'css/duyurular.css' %}">
 {% endblock %}
 
-{% block body_class %}duyurular-page{% endblock %}
-
 {% block content %}
+<div class="page-two-column">
+    <section>
+        <h1 class="page-title">Duyurular</h1>
+        <p class="page-subtitle">Akademik, sınav, burs ve kampüs duyurularını tek ekrandan takip et.</p>
 
-<!-- Başlık + küçük istatistik -->
-<section class="ann-header mb-4">
-    <div class="d-flex flex-wrap justify-content-between align-items-start gap-3">
-        <div>
-            <h1 class="h3 fw-bold mb-1">Duyurular</h1>
-            <p class="text-muted small mb-2">
-                Akademik, sınav, burs ve kampüs duyurularını tek ekranda takip et.
-            </p>
-            <div class="ann-stats small">
-                <span><i class="bi bi-megaphone-fill me-1"></i> 6 aktif duyuru</span>
-                <span><i class="bi bi-calendar-week me-1"></i> Son 30 güne göre listeleniyor (statik)</span>
+        <div class="ann-filter-row">
+            <span class="small text-muted">Tüm duyurular listeleniyor</span>
+            <div class="filter-pills">
+                <button class="filter-pill active" type="button">Tümü</button>
+                <button class="filter-pill" type="button">Akademik</button>
+                <button class="filter-pill" type="button">Sınav &amp; Takvim</button>
+                <button class="filter-pill" type="button">Burs</button>
             </div>
         </div>
 
-        <div class="ann-badge d-none d-md-flex align-items-center gap-2">
-            <i class="bi bi-bell-fill"></i>
-            <span>Yakında: E-posta ile duyuru aboneliği</span>
+        <div class="search-input-wrapper mb-3 d-flex gap-2">
+            <input type="text" class="search-input flex-grow-1"
+                   placeholder="Duyuruda ara (ör: burs, final, ders ekle-bırak)...">
+            <button class="btn-secondary-custom" type="button">Filtre</button>
         </div>
-    </div>
-</section>
 
-<!-- Filtre / arama toolbar -->
-<section class="ann-toolbar mb-4">
-    <div class="row g-2 align-items-center">
-        <div class="col-md-4">
-            <div class="ann-search">
-                <i class="bi bi-search"></i>
-                <input type="text" class="form-control form-control-sm"
-                       placeholder="Duyuruda ara (ör: burs, final, yaz okulu)…">
+        {% for post in posts %}
+        <article class="news-card ann-card">
+            <div class="news-card-inner">
+                <div class="news-content">
+
+                    <div class="ann-category-row">
+                        <span class="ann-category-badge ann-cat-akademik">DUYURU</span>
+                    </div>
+
+                    <div class="ann-meta-top">
+                        <span class="ann-date">
+                            <i class="bi bi-calendar3"></i> Yayınlanma: {{ post.created_at|date:"d.m.Y" }}
+                        </span>
+                        <span class="ann-publisher">
+                            <i class="bi bi-building"></i> @{{ post.author.username }}
+                        </span>
+                    </div>
+
+                    <h2 class="news-title">{{ post.title }}</h2>
+
+                    <p class="news-desc">
+                        {{ post.content|truncatechars:220 }}
+                    </p>
+
+                    <div class="chip-row">
+                        <span class="badge-chip">#duyuru</span>
+                        <span class="badge-chip">#kampüs</span>
+                    </div>
+
+                    <div class="ann-actions">
+                        <a class="btn-secondary-custom btn-sm" href="{% url 'post_detail' post.pk %}">
+                            <i class="bi bi-file-earmark-text me-1"></i> İncele
+                        </a>
+                        <a class="btn-primary-custom btn-sm" href="{% url 'post_detail' post.pk %}">
+                            <i class="bi bi-box-arrow-up-right me-1"></i> Detay
+                        </a>
+                    </div>
+
+                </div>
             </div>
+        </article>
+        {% empty %}
+            <div class="dash-card" style="margin-top:16px;">
+                Henüz duyuru yok.
+            </div>
+        {% endfor %}
+
+        <div class="pagination-custom">
+            <button type="button">Önceki</button>
+            <button type="button" class="active">1</button>
+            <button type="button">2</button>
+            <button type="button">3</button>
+            <button type="button">Sonraki</button>
         </div>
-        <div class="col-md-3">
-            <select class="form-select form-select-sm ann-select">
-                <option>Duyuru türü (statik)</option>
-                <option>Akademik</option>
-                <option>Sınav / Takvim</option>
-                <option>Burs</option>
-                <option>Kariyer & Staj</option>
-                <option>Kampüs</option>
-            </select>
-        </div>
-        <div class="col-md-3">
-            <select class="form-select form-select-sm ann-select">
-                <option>Fakülte filtresi (statik)</option>
-                <option>Tüm fakülteler</option>
-                <option>Mühendislik</option>
-                <option>İİBF</option>
-                <option>Tıp</option>
-            </select>
-        </div>
-        <div class="col-md-2">
-            <select class="form-select form-select-sm ann-select">
-                <option>Son 30 gün</option>
-                <option>Bugün</option>
-                <option>Bu hafta</option>
-                <option>Bu dönem</option>
-            </select>
-        </div>
-    </div>
-</section>
+    </section>
 
-<div class="row g-4">
-    <!-- Sol: Duyuru kartları -->
-    <div class="col-lg-8">
-        <section class="ann-list">
-
-            <!-- 🔶 1. Kart – Akademik -->
-            <article class="ann-card">
-                <div class="ann-pill acad">Akademik</div>
-
-                <div class="ann-body">
-                    <div class="d-flex justify-content-between flex-wrap gap-2 mb-1">
-                        <h2 class="ann-title">
-                            Bahar Dönemi Ders Ekle-Bırak Tarihleri
-                        </h2>
-                        <span class="ann-status ontime">
-                            <i class="bi bi-check-circle me-1"></i> Devam ediyor
-                        </span>
-                    </div>
-
-                    <p class="ann-meta small mb-1">
-                        <i class="bi bi-building me-1"></i> Öğrenci İşleri Daire Başkanlığı • 
-                        <i class="bi bi-calendar3 me-1 ms-2"></i> Yayımlanma: 02.03.2025
-                    </p>
-
-                    <p class="ann-text">
-                        2024-2025 Bahar yarıyılı için ders ekle-bırak işlemleri 4–8 Mart tarihleri arasında
-                        çevrim içi olarak Öğrenci Bilgi Sistemi üzerinden yapılacaktır. Detaylı tarih ve saat
-                        bilgileri için duyuru ekindeki PDF dosyasını inceleyiniz.
-                    </p>
-
-                    <div class="ann-footer">
-                        <div class="ann-tags">
-                            <span>#akademiktakvim</span>
-                            <span>#derskaydı</span>
-                        </div>
-                        <div class="ann-actions">
-                            <button class="btn btn-uninews-soft btn-sm">
-                                <i class="bi bi-file-earmark-pdf me-1"></i> PDF'yi Gör
-                            </button>
-                            <button class="btn btn-uninews btn-sm">
-                                Detay
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </article>
-
-            <!-- 🔶 2. Kart – Sınav -->
-            <article class="ann-card">
-                <div class="ann-pill exam">Sınav & Takvim</div>
-
-                <div class="ann-body">
-                    <div class="d-flex justify-content-between flex-wrap gap-2 mb-1">
-                        <h2 class="ann-title">
-                            Bahar Dönemi Vize Sınav Takvimi Yayınlandı
-                        </h2>
-                        <span class="ann-status soon">
-                            <i class="bi bi-hourglass-split me-1"></i> Yaklaşıyor
-                        </span>
-                    </div>
-
-                    <p class="ann-meta small mb-1">
-                        <i class="bi bi-building me-1"></i> Mühendislik Fakültesi Dekanlığı • 
-                        <i class="bi bi-calendar3 me-1 ms-2"></i> Yayımlanma: 28.02.2025
-                    </p>
-
-                    <p class="ann-text">
-                        Fakültemize ait tüm bölümlerin vize sınav programı yayınlanmıştır. Öğrencilerimizin
-                        sınav çakışmalarını kontrol etmeleri önemle rica olunur. Takvim PDF ve Excel formatında mevcuttur.
-                    </p>
-
-                    <div class="ann-footer">
-                        <div class="ann-tags">
-                            <span>#vize</span>
-                            <span>#sınavtakvimi</span>
-                        </div>
-                        <div class="ann-actions">
-                            <button class="btn btn-uninews-soft btn-sm">
-                                <i class="bi bi-download me-1"></i> Takvimi İndir
-                            </button>
-                            <button class="btn btn-uninews btn-sm">
-                                Detay
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </article>
-
-            <!-- 🔶 3. Kart – Burs -->
-            <article class="ann-card">
-                <div class="ann-pill burs">Burs</div>
-
-                <div class="ann-body">
-                    <div class="d-flex justify-content-between flex-wrap gap-2 mb-1">
-                        <h2 class="ann-title">
-                            Başarı Bursu Başvuruları İçin Son Gün: 10 Mart
-                        </h2>
-                        <span class="ann-status warning">
-                            <i class="bi bi-exclamation-triangle me-1"></i> Son gün yaklaşıyor
-                        </span>
-                    </div>
-
-                    <p class="ann-meta small mb-1">
-                        <i class="bi bi-building me-1"></i> Burs Ofisi • 
-                        <i class="bi bi-calendar3 me-1 ms-2"></i> Yayımlanma: 20.02.2025
-                    </p>
-
-                    <p class="ann-text">
-                        2024-2025 akademik yılı Bahar dönemi başarı bursu başvuruları 10 Mart tarihinde
-                        sona ermektedir. Başvurular yalnızca çevrim içi alınmakta olup, eksik belge kabul edilmeyecektir.
-                    </p>
-
-                    <div class="ann-footer">
-                        <div class="ann-tags">
-                            <span>#burs</span>
-                            <span>#sonbaşvurutarihi</span>
-                        </div>
-                        <div class="ann-actions">
-                            <button class="btn btn-uninews-soft btn-sm">
-                                <i class="bi bi-link-45deg me-1"></i> Başvuru Formu
-                            </button>
-                            <button class="btn btn-uninews btn-sm">
-                                Detay
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </article>
-
-            <!-- 🔶 4. Kart – Kariyer -->
-            <article class="ann-card">
-                <div class="ann-pill career">Kariyer & Staj</div>
-
-                <div class="ann-body">
-                    <div class="d-flex justify-content-between flex-wrap gap-2 mb-1">
-                        <h2 class="ann-title">
-                            Yaz Dönemi Zorunlu Staj Bilgilendirme Semineri
-                        </h2>
-                        <span class="ann-status info">
-                            <i class="bi bi-info-circle me-1"></i> Bilgilendirme
-                        </span>
-                    </div>
-
-                    <p class="ann-meta small mb-1">
-                        <i class="bi bi-building me-1"></i> Kariyer Merkezi • 
-                        <i class="bi bi-calendar3 me-1 ms-2"></i> Yayımlanma: 18.02.2025
-                    </p>
-
-                    <p class="ann-text">
-                        Zorunlu staj süreçleri, sigorta işlemleri ve staj defteri hakkında bilgilendirme
-                        semineri 6 Mart Çarşamba günü saat 14.00'te Konferans Salonu'nda yapılacaktır.
-                    </p>
-
-                    <div class="ann-footer">
-                        <div class="ann-tags">
-                            <span>#staj</span>
-                            <span>#kariyer</span>
-                        </div>
-                        <div class="ann-actions">
-                            <button class="btn btn-uninews-soft btn-sm">
-                                <i class="bi bi-calendar-plus me-1"></i> Takvime Ekle
-                            </button>
-                            <button class="btn btn-uninews btn-sm">
-                                Detay
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </article>
-
+    <aside>
+        <section class="side-card">
+            <h3>Önemli Tarihler</h3>
+            <ul class="date-list">
+                <li>
+                    <span class="date-pill">4–8 Mart</span>
+                    <span class="date-text">Ders ekle-bırak haftası</span>
+                </li>
+                <li>
+                    <span class="date-pill">15 Mart</span>
+                    <span class="date-text">Vize sınav takvimi son güncelleme</span>
+                </li>
+                <li>
+                    <span class="date-pill">10 Mart</span>
+                    <span class="date-text">Başarı bursu son başvuru tarihi</span>
+                </li>
+            </ul>
         </section>
-    </div>
 
-    <!-- Sağ: Yaklaşan tarihler / kısa özet -->
-    <div class="col-lg-4">
-        <aside class="ann-sidebar">
-            <div class="ann-sidebar-card mb-3">
-                <h6 class="fw-bold mb-2">Önemli Tarihler</h6>
-                <ul class="ann-sidebar-list small mb-0">
-                    <li><i class="bi bi-calendar-event me-1"></i> 08 Mart – Ders ekle-bırak bitişi</li>
-                    <li><i class="bi bi-calendar-event me-1"></i> 10 Mart – Başarı bursu son gün</li>
-                    <li><i class="bi bi-calendar-event me-1"></i> 15 Mart – Vize takvimi güncelleme</li>
-                </ul>
-            </div>
+        <section class="side-card">
+            <h3>Burs &amp; Başvuru Son Günler</h3>
+            <ul class="simple-list">
+                <li>Yemek bursu başvuruları – 05 Mart</li>
+                <li>Yurt ücreti taksitlendirme – 12 Mart</li>
+                <li>Uluslararası değişim programı – 20 Mart</li>
+            </ul>
+        </section>
 
-            <div class="ann-sidebar-card">
-                <h6 class="fw-bold mb-2">Duyuruları Kaçırma</h6>
-                <p class="small text-muted mb-3">
-                    Yakında; seçtiğin kategoriler için e-posta veya bildirim aboneliği eklenebilir.
-                    Şimdilik bu alan statik bir bilgi kutusu olarak duruyor.
-                </p>
-                <button class="btn btn-uninews btn-sm w-100">
-                    <i class="bi bi-bell me-1"></i> Bildirim almak istiyorum (mock)
-                </button>
-            </div>
-        </aside>
-    </div>
+        <section class="side-card">
+            <h3>Sık Kullanılan Linkler</h3>
+            <ul class="link-list">
+                <li><a href="#">Öğrenci Bilgi Sistemi</a></li>
+                <li><a href="#">Akademik Takvim</a></li>
+                <li><a href="#">Sınav Yönetmelikleri</a></li>
+                <li><a href="#">Burs Yönergesi</a></li>
+            </ul>
+        </section>
+
+        <section class="side-card">
+            <h3>Sınav Haftası İpuçları</h3>
+            <ul class="bullet-list">
+                <li>Sınav saatini ve salonunu en az bir gün önce kontrol et.</li>
+                <li>Kimlik kartını yanına almayı unutma.</li>
+                <li>Online sınavlarda bağlantı ve cihazını önceden test et.</li>
+                <li>Ders sorumlularının duyurularını düzenli kontrol et.</li>
+            </ul>
+        </section>
+    </aside>
 </div>
-
 {% endblock %}

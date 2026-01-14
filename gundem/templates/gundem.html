@@ -1,142 +1,166 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Gündem | UniNews{% endblock %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/gundem.css' %}">
+{% endblock %}
+
 {% block content %}
+<div class="page-two-column">
+    <section>
+        <h1 class="page-title">Gündem</h1>
+        <p class="page-subtitle">Kampüste olup biten en sıcak gelişmeler.</p>
 
-<section class="mb-4">
-    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
-        <div>
-            <h1 class="h3 fw-bold mb-1">Gündem</h1>
-            <p class="text-muted small mb-0">
-                Kampüste olup biten en sıcak gelişmeler.
-            </p>
+        <!-- ÜST FİLTRE + ARAMA -->
+        <div class="gundem-filter-row">
+            <span class="small text-muted">Tüm gündem haberleri listeleniyor</span>
+            <div class="filter-pills">
+                <button class="filter-pill active" type="button">Tümü</button>
+                <button class="filter-pill" type="button">Son 24 Saat</button>
+                <button class="filter-pill" type="button">Bu Hafta</button>
+                <button class="filter-pill" type="button">Bu Ay</button>
+            </div>
         </div>
-        <div class="d-flex flex-wrap gap-2">
-            <button class="btn btn-uninews-soft btn-sm">Tümü</button>
-            <button class="btn btn-outline-uninews btn-sm">Son 24 Saat</button>
-            <button class="btn btn-outline-uninews btn-sm">Bu Hafta</button>
-            <button class="btn btn-outline-uninews btn-sm">Bu Ay</button>
-        </div>
-    </div>
-</section>
 
-<div class="row g-4">
-    <div class="col-lg-8">
-        <!-- Burayı Django for döngüsü ile dinamik yapabilirsin:
-        {% for article in articles %}
-            ... kart ...
+        <!-- Filtre satırı (şimdilik UI, backend bağlamadık) -->
+        <div class="search-input-wrapper mb-3 d-flex gap-2">
+            <input type="text" class="search-input flex-grow-1" placeholder="Kulüp veya anahtar kelime ara...">
+            <button class="btn-secondary-custom" type="button">Filtre</button>
+        </div>
+
+        {% for post in posts %}
+        <article class="news-card news-card-modern">
+            <div class="news-media">
+                {% if post.cover %}
+                    <img src="{{ post.cover.url }}" class="news-media-img" alt="">
+                {% else %}
+                    <img src="https://picsum.photos/seed/gundem{{ post.pk }}/900/450" class="news-media-img" alt="">
+                {% endif %}
+                <div class="news-media-chip">
+                    <span class="chip-label">GÜNDEM</span>
+                </div>
+            </div>
+
+            <div class="news-body">
+                <div class="news-body-top">
+                    <span class="news-tag">Kampüs Haberleri</span>
+                    <span class="news-datetime">
+                        <i class="bi bi-calendar3"></i> {{ post.created_at|date:"d.m.Y" }}
+                        <span class="dot">•</span>
+                        <i class="bi bi-clock"></i> {{ post.created_at|date:"H:i" }}
+                    </span>
+                </div>
+
+                <h2 class="news-title mb-1">{{ post.title }}</h2>
+
+                <div class="news-author-row">
+                    <span class="news-author">
+                        <i class="bi bi-person-badge"></i> @{{ post.author.username }}
+                    </span>
+                    <span class="news-author-role">
+                        {% if post.author.is_staff %}Onaylı yayıncı{% else %}Üye{% endif %}
+                    </span>
+                </div>
+
+                <p class="news-desc">
+                    {{ post.content|truncatechars:160 }}
+                </p>
+
+                <div class="news-body-bottom">
+                    <div class="news-stats">
+                        <span><i class="bi bi-eye"></i> {{ post.views.count }}</span>
+                        <span><i class="bi bi-heart"></i> {{ post.likes.count }}</span>
+                        <span><i class="bi bi-chat"></i> {{ post.comments.count }} yorum</span>
+                    </div>
+
+                    <a href="{% url 'post_detail' post.pk %}" class="news-action">
+                        Devamını oku
+                        <i class="bi bi-arrow-right-short"></i>
+                    </a>
+                </div>
+            </div>
+        </article>
         {% empty %}
-            <p class="text-muted small">Bu kategoride henüz haber yok.</p>
+            <div class="dash-card" style="margin-top:16px;">
+                Henüz gündem içeriği yok.
+            </div>
         {% endfor %}
-        -->
+    </section>
 
-        <!-- Örnek Gündem Kartı 1 -->
-        <article class="news-card card mb-3">
-            <div class="row g-0 align-items-center">
-                <div class="col-sm-4">
-                    <div class="news-thumb">
-                        <img src="https://images.pexels.com/photos/207691/pexels-photo-207691.jpeg"
-                             class="img-fluid h-100 object-fit-cover" alt="Kampüs">
-                    </div>
-                </div>
-                <div class="col-sm-8">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center mb-1">
-                            <span class="badge category-badge">Gündem</span>
-                            <small class="text-muted">
-                                <i class="bi bi-clock me-1"></i> 2 saat önce
-                            </small>
-                        </div>
-                        <h5 class="card-title mb-1">Kampüs Girişlerinde Yeni Güvenlik Uygulaması</h5>
-                        <p class="card-text small text-muted mb-2">
-                            Kart okuyucu turnikeler yenilendi, giriş çıkışlar artık mobil uygulama ile de yapılabilecek...
-                        </p>
-                        <div class="d-flex justify-content-between align-items-center small">
-                            <div class="d-flex align-items-center gap-2">
-                                <span><i class="bi bi-eye me-1"></i> 1.5K</span>
-                                <span><i class="bi bi-heart me-1"></i> 102</span>
-                            </div>
-                            <a href="#" class="stretched-link text-decoration-none fw-semibold read-more">
-                                Devamını oku <i class="bi bi-arrow-right-short"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </article>
+    <!-- SAĞ TARAF / ASIDE (statik kalsın) -->
+    <aside>
+        <section class="side-card">
+            <h3>En Çok Okunan Gündem</h3>
+            <ul class="simple-list">
+                <li>Kampüs Girişlerinde Yeni Güvenlik Uygulaması</li>
+                <li>Yurt Ücretlerinde Yapılan Güncelleme</li>
+                <li>Kütüphane Final Haftası Çalışma Saatleri</li>
+                <li>Bahar Şenliği Programı Yayınlandı</li>
+            </ul>
+        </section>
 
-        <!-- Örnek Gündem Kartı 2 -->
-        <article class="news-card card mb-3">
-            <div class="row g-0 align-items-center">
-                <div class="col-sm-4">
-                    <div class="news-thumb">
-                        <img src="https://images.pexels.com/photos/256490/pexels-photo-256490.jpeg"
-                             class="img-fluid h-100 object-fit-cover" alt="Gündem">
+        <section class="side-card">
+            <h3>Yaklaşan Etkinlikler</h3>
+            <ul class="event-list">
+                <li>
+                    <span class="event-date">
+                        <span class="day">12</span>
+                        <span class="month">ARALIK</span>
+                    </span>
+                    <div class="event-info">
+                        <p class="event-title">Yapay Zeka Semineri</p>
+                        <p class="event-meta">Mühendislik Fakültesi Konferans Salonu</p>
                     </div>
-                </div>
-                <div class="col-sm-8">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center mb-1">
-                            <span class="badge category-badge">Gündem</span>
-                            <small class="text-muted">
-                                <i class="bi bi-calendar-event me-1"></i> 3 Nisan 2025
-                            </small>
-                        </div>
-                        <h5 class="card-title mb-1">Yeni Yemekhane Menü Sistemi Teste Başladı</h5>
-                        <p class="card-text small text-muted mb-2">
-                            Öğrenciler artık yemek menülerini mobil uygulama üzerinden oylayabilecek ve geri bildirim verebilecek...
-                        </p>
-                        <div class="d-flex justify-content-between align-items-center small">
-                            <div class="d-flex align-items-center gap-2">
-                                <span><i class="bi bi-eye me-1"></i> 780</span>
-                                <span><i class="bi bi-heart me-1"></i> 41</span>
-                            </div>
-                            <a href="#" class="stretched-link text-decoration-none fw-semibold read-more">
-                                Devamını oku <i class="bi bi-arrow-right-short"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </article>
-
-        <!-- Sayfalama -->
-        <nav aria-label="Sayfalama" class="mt-4">
-            <ul class="pagination pagination-sm justify-content-center">
-                <li class="page-item disabled">
-                    <a class="page-link" href="#" tabindex="-1">Önceki</a>
                 </li>
-                <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item">
-                    <a class="page-link" href="#">Sonraki</a>
+                <li>
+                    <span class="event-date">
+                        <span class="day">14</span>
+                        <span class="month">ARALIK</span>
+                    </span>
+                    <div class="event-info">
+                        <p class="event-title">E-Spor Turnuvası</p>
+                        <p class="event-meta">Spor Salonu</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="event-date">
+                        <span class="day">16</span>
+                        <span class="month">ARALIK</span>
+                    </span>
+                    <div class="event-info">
+                        <p class="event-title">Kariyer ve CV Atölyesi</p>
+                        <p class="event-meta">Kariyer Merkezi</p>
+                    </div>
                 </li>
             </ul>
-        </nav>
-    </div>
+        </section>
 
-    <!-- Sağ sidebar (aynı tasarım) -->
-    <div class="col-lg-4">
-        <div class="card mb-4 sidebar-card">
-            <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center">
-                <h6 class="mb-0 fw-bold">En Çok Okunan Gündem</h6>
-                <i class="bi bi-graph-up-arrow text-orange"></i>
+        <section class="side-card">
+            <h3>Trend Etiketler</h3>
+            <div class="tag-list">
+                <span>#final</span>
+                <span>#burs</span>
+                <span>#kampüsyaşamı</span>
+                <span>#erasmus</span>
+                <span>#staj</span>
+                <span>#hackathon</span>
+                <span>#baharşenliği</span>
             </div>
-            <div class="list-group list-group-flush small">
-                <a href="#" class="list-group-item list-group-item-action">
-                    Rektör Öğrencilerle Buluştu
-                </a>
-                <a href="#" class="list-group-item list-group-item-action">
-                    Kütüphane Çalışma Saatleri Değişti
-                </a>
-                <a href="#" class="list-group-item list-group-item-action">
-                    Kampüs İçi Ulaşım Hattı Genişletildi
-                </a>
+        </section>
+
+        <section class="side-card">
+            <h3>Kampüs Anketi</h3>
+            <p class="poll-question">Yeni kampüs giriş uygulamasını nasıl buldunuz?</p>
+            <div class="poll-options">
+                <button type="button" class="poll-option">👍 Çok iyi</button>
+                <button type="button" class="poll-option">👌 İdare eder</button>
+                <button type="button" class="poll-option">🛠 Geliştirilmeli</button>
+                <button type="button" class="poll-option">👎 Hiç beğenmedim</button>
             </div>
-        </div>
-    </div>
+            <p class="poll-meta">Toplam oy: 482</p>
+        </section>
+    </aside>
 </div>
-
 {% endblock %}

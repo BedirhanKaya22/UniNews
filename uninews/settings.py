@@ -37,12 +37,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    "uninews",
-    "uni_home_page",
     "kulup",
     "gundem",
     "etkinlikler",
     "duyurular",
+    "uni_home_page.apps.UniHomePageConfig",
+    "profile_view.apps.ProfileViewConfig",
 ]
 
 MIDDLEWARE = [
@@ -110,7 +110,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Istanbul'
 
 USE_I18N = True
 
@@ -126,3 +126,9 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"
+STATICFILES_DIRS = [BASE_DIR / "static"]  # varsa
+LOGIN_URL = '/login/'  # kendi login url’ine göre değiştir
+GEMINI_API_KEY = "AIzaSyDLu0RJHgwI5P5liIhMtvtCk_2dh_w5rQE"

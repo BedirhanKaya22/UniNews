@@ -1,80 +1,124 @@
-{% extends "base.html" %}
+{# base.html şablonunu miras alır (ortak layout: navbar, footer vs.) #}
+{% extends 'base.html' %}
 
+{# Django'nun static dosyalarını (CSS, JS, img) kullanabilmek için yükler #}
+{% load static %}
+
+{# Sayfanın <title> kısmını belirler #}
 {% block title %}Giriş Yap | UniNews{% endblock %}
 
+{# Bu sayfaya özel CSS dosyalarını eklemek için kullanılan blok #}
+{% block extra_css %}
+    {# login sayfasına özel CSS dosyasını projeden çağırır #}
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+{% endblock %}
+
+{# Sayfanın ana içeriğinin bulunduğu blok #}
 {% block content %}
 
-<section class="auth-section">
-    <!-- row/col YOK, kart direkt burada -->
+<!-- Sayfayı hem yatay hem dikey olarak ortalayan ana kapsayıcı -->
+<div class="full-page-center">
+
+    <!-- Login/Register kart tasarımı -->
     <div class="auth-card">
-        <div class="text-center mb-3">
-            <div class="logo-circle mb-2 mx-auto">
-                <i class="bi bi-lightning-charge-fill"></i>
+
+        <!-- Logo alanı (üstte ortalı) -->
+        <div class="text-center mb-2">
+            <div class="logo-icon">
+                <!-- UniNews logosu -->
+                <img src="{% static 'img/uninews-logo.png' %}" alt="UniNews Logo">
             </div>
-            <h1 class="h5 fw-bold mb-1">UniNews’e Giriş Yap</h1>
-            <p class="small text-muted mb-0">
-                Kampüs haberlerini takip et, favorilerine ekle, yorum yap.
-            </p>
         </div>
 
-        <!-- Django messages -->
-        {% if messages %}
-            <div class="mb-3">
-                {% for message in messages %}
-                    <div class="alert alert-{{ message.tags }} small mb-2" role="alert">
-                        {{ message }}
-                    </div>
-                {% endfor %}
-            </div>
-        {% endif %}
+        <!-- Sayfa başlığı -->
+        <h1 class="auth-title">UniNews’e Giriş Yap</h1>
 
-        <form method="post" novalidate>
+        <!-- Sayfa alt açıklaması -->
+        <p class="auth-subtitle">
+            Kampüs haberlerini takip et, favorilerine ekle, yorum yap.
+        </p>
+
+        <!-- Giriş formu (POST metodu ile gönderilir) -->
+        <form method="post">
+
+            {# Django CSRF koruması (zorunlu) #}
             {% csrf_token %}
 
-            <div class="mb-3">
-                <label class="form-label small fw-semibold">Kullanıcı adı veya E-posta</label>
-                <input type="text" name="username" class="form-control form-control-sm"
-                       placeholder="ornek.ogrenci@uninews.edu">
+            <!-- Kullanıcı adı / e-posta alanı -->
+            <div class="form-group-custom">
+                <label for="username">Kullanıcı adı veya E-posta</label>
+                <input
+                    type="text"
+                    id="username"
+                    name="username"
+                    class="form-control-custom"
+                    placeholder="ornek.ogrenci@uninews.edu">
             </div>
 
-            <div class="mb-2">
-                <label class="form-label small fw-semibold">Şifre</label>
-                <input type="password" name="password" class="form-control form-control-sm"
-                       placeholder="••••••••">
+            <!-- Şifre alanı -->
+            <div class="form-group-custom">
+                <label for="password">Şifre</label>
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    class="form-control-custom"
+                    placeholder="•••••••">
             </div>
 
-            <div class="d-flex justify-content-between align-items-center mb-3 small">
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="rememberMe">
-                    <label class="form-check-label" for="rememberMe">
+            <!-- Beni hatırla + Şifremi unuttum alanı -->
+            <div class="form-inline-custom">
+
+                <!-- Beni hatırla checkbox -->
+                <div class="form-check m-0">
+                    <input
+                        class="form-check-input"
+                        type="checkbox"
+                        id="remember">
+                    <label
+                        class="form-check-label small"
+                        for="remember">
                         Beni hatırla
                     </label>
                 </div>
-                <a href="{% url 'password_reset' %}" class="link-orange text-decoration-none">
+
+                <!-- Şifre sıfırlama sayfasına yönlendirme -->
+                <a href="{% url 'password_reset' %}" class="link-muted">
                     Şifremi unuttum
                 </a>
             </div>
 
-            <button type="submit" class="btn btn-uninews w-100 btn-sm mb-2">
-                <i class="bi bi-box-arrow-in-right me-1"></i> Giriş Yap
+            <!-- Giriş yap butonu -->
+            <button
+                type="submit"
+                class="btn-primary-custom btn-block mb-2">
+                Giriş Yap
             </button>
+
+            <!-- Ayırıcı (veya yazısı) -->
+            <div class="divider">
+                <span>veya</span>
+            </div>
+
+            <!-- Google ile giriş butonu (şu an sadece UI) -->
+            <button
+                type="button"
+                class="btn-secondary-custom btn-block mb-2">
+                <i class="bi bi-google me-2"></i>
+                Google ile devam et
+            </button>
+
+            <!-- Kayıt sayfasına yönlendirme -->
+            <p class="text-center-small mt-1">
+                Hesabın yok mu?
+                <a href="{% url 'register' %}" class="link-muted">
+                    Kayıt ol
+                </a>
+            </p>
+
         </form>
-
-        <div class="auth-divider my-3">
-            <span>veya</span>
-        </div>
-
-        <button class="btn btn-outline-uninews w-100 btn-sm mb-2">
-            <i class="bi bi-google me-1"></i> Google ile devam et
-        </button>
-
-        <p class="small text-center mb-0 mt-2">
-            Hesabın yok mu?
-            <a href="{% url 'register' %}" class="link-orange text-decoration-none fw-semibold">
-                Kayıt ol
-            </a>
-        </p>
     </div>
-</section>
+</div>
 
+{# content bloğunun sonu #}
 {% endblock %}

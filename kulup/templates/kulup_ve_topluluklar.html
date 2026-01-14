@@ -1,218 +1,112 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 {% load static %}
 
 {% block title %}Kulüpler & Topluluklar | UniNews{% endblock %}
 
 {% block extra_css %}
-    <link rel="stylesheet" href="{% static 'css/kulup.css' %}">
+<link rel="stylesheet" href="{% static 'css/kulup.css' %}">
 {% endblock %}
 
-{% block body_class %}kulup-page{% endblock %}
-
 {% block content %}
+<div class="page-two-column">
+    <section>
+        <h1 class="page-title">Kulüpler ve Öğrenci Toplulukları</h1>
+        <p class="page-subtitle">Kampüs hayatını şekillendiren kulüpleri keşfet, ilgi alanına göre filtrele.</p>
 
-<section class="clubs-header mb-4">
-    <div class="d-flex flex-wrap justify-content-between align-items-start gap-3">
-        <div>
-            <h1 class="h3 fw-bold mb-1">Kulüpler ve Öğrenci Toplulukları</h1>
-            <p class="text-muted small mb-2">
-                Kampüs hayatını şekillendiren kulüpleri keşfet, ilgi alanına göre filtrele.
-            </p>
-
-            <div class="clubs-stats small">
-                <span><i class="bi bi-people-fill me-1"></i> 3 aktif kulüp listeleniyor</span>
-                <span><i class="bi bi-building me-1"></i> 3 farklı üniversite</span>
-                <span><i class="bi bi-lightning-charge-fill me-1"></i> Statik demo veri</span>
+        <!-- ÜST FİLTRE + ARAMA -->
+        <div class="gundem-filter-row">
+            <span class="small text-muted">Kulüp içerikleri listeleniyor</span>
+            <div class="filter-pills">
+                <button class="filter-pill active" type="button">Tümü</button>
+                <button class="filter-pill" type="button">Teknik</button>
+                <button class="filter-pill" type="button">Sanat &amp; Kültür</button>
+                <button class="filter-pill" type="button">Sosyal Sorumluluk</button>
+                <button class="filter-pill" type="button">Spor</button>
             </div>
         </div>
 
-        <div class="clubs-badge d-none d-md-flex align-items-center gap-2">
-            <i class="bi bi-stars"></i>
-            <span>Yakında: Üniversite bazlı dinamik kulüp listesi</span>
+        <!-- Filtre satırı (şimdilik UI, backend bağlamadık) -->
+        <div class="search-input-wrapper mb-3 d-flex gap-2">
+            <input type="text" class="search-input flex-grow-1" placeholder="Kulüp veya anahtar kelime ara...">
+            <button class="btn-secondary-custom" type="button">Filtre</button>
         </div>
-    </div>
-</section>
 
-<!-- Üst toolbar: arama + üniversite filtresi + kategori butonları -->
-<section class="club-toolbar mb-4">
-    <div class="row g-2 align-items-center">
-        <div class="col-md-5">
-            <div class="club-search">
-                <i class="bi bi-search"></i>
-                <input type="text" class="form-control form-control-sm" placeholder="Kulüp veya anahtar kelime ara...">
-            </div>
-        </div>
-        <div class="col-md-3">
-            <select class="form-select form-select-sm club-select">
-                <option>Üniversite filtresi (statik)</option>
-                <option>İstanbul Teknik Üniversitesi</option>
-                <option>Boğaziçi Üniversitesi</option>
-                <option>Ege Üniversitesi</option>
-            </select>
-        </div>
-        <div class="col-md-4">
-            <div class="club-filters d-flex flex-wrap gap-2 justify-content-md-end mt-2 mt-md-0">
-                <button class="btn btn-uninews-soft btn-sm">Tümü</button>
-                <button class="btn btn-outline-uninews btn-sm">Teknik</button>
-                <button class="btn btn-outline-uninews btn-sm">Sosyal</button>
-                <button class="btn btn-outline-uninews btn-sm">Sanat</button>
-                <button class="btn btn-outline-uninews btn-sm">Spor</button>
-            </div>
-        </div>
-    </div>
-</section>
-
-<div class="row g-4">
-    <!-- Sol: Kulüp kartları -->
-    <div class="col-lg-8">
-        <section class="clubs-list">
-
-            <!-- 🔸 1. Kart -->
-            <article class="club-card">
-                <div class="club-avatar">
-                    <span>AI</span>
-                </div>
-
-                <div class="club-info">
-                    <div class="d-flex justify-content-between flex-wrap gap-2">
-                        <div>
-                            <h2 class="club-title">Yapay Zeka ve Veri Bilimi Topluluğu</h2>
-                            <p class="club-university">İstanbul Teknik Üniversitesi</p>
-                        </div>
-                        <span class="club-type technical">Teknik Kulüp</span>
-                    </div>
-
-                    <p class="club-description">
-                        Yapay zeka, veri bilimi ve yazılım geliştirmeye ilgi duyan öğrencilerin bir araya
-                        geldiği aktif bir topluluk. Workshoplar, eğitimler ve hackathonlar düzenler.
-                    </p>
-
-                    <div class="club-tags">
-                        <span>#AI</span>
-                        <span>#python</span>
-                        <span>#datascience</span>
-                        <span>#machinelearning</span>
-                    </div>
-
-                    <div class="club-foot">
-                        <div class="stats">
-                            <span><i class="bi bi-people-fill me-1"></i> 125 üye</span>
-                            <span><i class="bi bi-calendar-event me-1"></i> Haftalık etkinlik</span>
-                            <span><i class="bi bi-discord me-1"></i> Discord topluluğu</span>
-                        </div>
-                        <div class="actions">
-                            <button class="btn btn-outline-uninews btn-sm">Detay</button>
-                            <button class="btn btn-uninews btn-sm">Katıl</button>
-                        </div>
-                    </div>
-                </div>
-            </article>
-
-            <!-- 🔸 2. Kart -->
-            <article class="club-card">
-                <div class="club-avatar">
-                    <span>MT</span>
-                </div>
-
-                <div class="club-info">
-                    <div class="d-flex justify-content-between flex-wrap gap-2">
-                        <div>
-                            <h2 class="club-title">Müzik &amp; Tiyatro Kulübü</h2>
-                            <p class="club-university">Boğaziçi Üniversitesi</p>
-                        </div>
-                        <span class="club-type art">Sanat Kulübü</span>
-                    </div>
-
-                    <p class="club-description">
-                        Müzik, sahne sanatları ve tiyatro alanında projeler üreten aktif bir öğrenci kulübü.
-                        Performanslar, seçmeler, atölyeler ve dönem içi gösterimler düzenler.
-                    </p>
-
-                    <div class="club-tags">
-                        <span>#müzik</span>
-                        <span>#tiyatro</span>
-                        <span>#sahnesanatları</span>
-                    </div>
-
-                    <div class="club-foot">
-                        <div class="stats">
-                            <span><i class="bi bi-people-fill me-1"></i> 89 üye</span>
-                            <span><i class="bi bi-calendar-event me-1"></i> Aylık etkinlik</span>
-                            <span><i class="bi bi-instagram me-1"></i> IG: /bounmt</span>
-                        </div>
-                        <div class="actions">
-                            <button class="btn btn-outline-uninews btn-sm">Detay</button>
-                            <button class="btn btn-uninews btn-sm">Katıl</button>
-                        </div>
-                    </div>
-                </div>
-            </article>
-
-            <!-- 🔸 3. Kart -->
-            <article class="club-card">
-                <div class="club-avatar">
-                    <span>SK</span>
-                </div>
-
-                <div class="club-info">
-                    <div class="d-flex justify-content-between flex-wrap gap-2">
-                        <div>
-                            <h2 class="club-title">Sürdürülebilirlik &amp; Çevre Topluluğu</h2>
-                            <p class="club-university">Ege Üniversitesi</p>
-                        </div>
-                        <span class="club-type social">Sosyal Kulüp</span>
-                    </div>
-
-                    <p class="club-description">
-                        Doğa, sürdürülebilirlik ve çevre bilinci konusunda farkındalık etkinlikleri
-                        düzenleyen topluluk. Temizlik kampanyaları, seminerler ve sosyal sorumluluk projeleri yürütür.
-                    </p>
-
-                    <div class="club-tags">
-                        <span>#çevre</span>
-                        <span>#sustainability</span>
-                        <span>#yeşilhareket</span>
-                    </div>
-
-                    <div class="club-foot">
-                        <div class="stats">
-                            <span><i class="bi bi-people-fill me-1"></i> 210 üye</span>
-                            <span><i class="bi bi-calendar-event me-1"></i> İki haftada bir etkinlik</span>
-                            <span><i class="bi bi-whatsapp me-1"></i> WhatsApp grubu</span>
-                        </div>
-                        <div class="actions">
-                            <button class="btn btn-outline-uninews btn-sm">Detay</button>
-                            <button class="btn btn-uninews btn-sm">Katıl</button>
-                        </div>
-                    </div>
-                </div>
-            </article>
-        </section>
-    </div>
-
-    <!-- Sağ: Bilgi kutusu / ipuçları -->
-    <div class="col-lg-4">
-        <aside class="club-sidebar">
-            <div class="club-sidebar-card mb-3">
-                <h6 class="fw-bold mb-2">Yakında Neler Olacak?</h6>
-                <ul class="sidebar-list small mb-0">
-                    <li><i class="bi bi-check2-circle me-1"></i> Üniversiteye göre filtreleme</li>
-                    <li><i class="bi bi-check2-circle me-1"></i> Kulüplere başvuru formu</li>
-                    <li><i class="bi bi-check2-circle me-1"></i> Kulüp yöneticisi paneli</li>
-                </ul>
+        {% for post in posts %}
+        <article class="club-card">
+            {# Avatar: yazarın kullanıcı adının ilk 2 harfi #}
+            <div class="club-avatar club-ai">
+                {{ post.author.username|slice:":2"|upper }}
             </div>
 
-            <div class="club-sidebar-card">
-                <h6 class="fw-bold mb-2">Kulübünü Eklemek İster misin?</h6>
-                <p class="small text-muted mb-3">
-                    Kendi kulübünün UniNews’te listelenmesini istiyorsan, bizimle iletişime geç.
+            <div class="club-body">
+                <div class="club-header">
+                    <h2 class="club-title">{{ post.title }}</h2>
+
+                    {# Senin tasarımda "club-type tech/art/..." var; biz sabit bir rozet gösteriyoruz #}
+                    <span class="club-type tech">Kulüp İçeriği</span>
+                </div>
+
+                <p class="club-desc">
+                    {{ post.content|truncatechars:180 }}
                 </p>
-                <button class="btn btn-uninews btn-sm w-100">
-                    <i class="bi bi-send-fill me-1"></i> Başvuru talebi gönder (mock)
-                </button>
-            </div>
-        </aside>
-    </div>
-</div>
 
+                <div class="chip-row">
+                    <span class="badge-chip">#kulup</span>
+                    <span class="badge-chip">@{{ post.author.username }}</span>
+                    <span class="badge-chip">{{ post.created_at|date:"d.m.Y" }}</span>
+                </div>
+
+                <div class="club-footer">
+                    <div class="club-meta">
+                        <span><i class="bi bi-eye"></i> {{ post.views.count }}</span>
+                        <span>•</span>
+                        <span><i class="bi bi-heart"></i> {{ post.likes.count }}</span>
+                        <span>•</span>
+                        <span><i class="bi bi-chat"></i> {{ post.comments.count }}</span>
+                    </div>
+
+                    <div class="club-actions">
+                        <a class="btn-secondary-custom btn-sm" href="{% url 'post_detail' post.pk %}">Detay</a>
+                        <a class="btn-primary-custom btn-sm" href="{% url 'post_detail' post.pk %}">Aç</a>
+                    </div>
+                </div>
+            </div>
+        </article>
+        {% empty %}
+            <div class="dash-card" style="margin-top:16px;">
+                Henüz kulüp içeriği yok.
+            </div>
+        {% endfor %}
+    </section>
+
+    <aside>
+        <section class="side-card">
+            <h3>Filtreler</h3>
+            <ul class="bullet-list">
+                <li>Teknik kulüpler</li>
+                <li>Sanat &amp; kültür kulüpleri</li>
+                <li>Sosyal sorumluluk toplulukları</li>
+                <li>Spor kulüpleri</li>
+            </ul>
+        </section>
+
+        <section class="side-card">
+            <h3>En Aktif Kulüpler</h3>
+            <ul class="simple-list">
+                <li>Yapay Zeka ve Veri Bilimi Topluluğu</li>
+                <li>Girişimcilik Kulübü</li>
+                <li>Müzik ve Sahne Sanatları Kulübü</li>
+                <li>Fotoğrafçılık ve Medya Topluluğu</li>
+            </ul>
+        </section>
+
+        <section class="side-card">
+            <h3>Kulübünü Eklemek İster misin?</h3>
+            <p class="side-text">
+                Kendi kulübünün UniNews’te listelenmesini istiyorsan, bizimle iletişime geç.
+            </p>
+            <button class="btn-primary-custom btn-block" type="button">Başvuru talebi gönder</button>
+        </section>
+    </aside>
+</div>
 {% endblock %}

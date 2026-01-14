@@ -1,83 +1,187 @@
-{% extends "base.html" %}
+{# base.html'den miras alır (genel layout: navbar/footer vb.) #}
+{% extends 'base.html' %}
 
+{# static dosyaları (css/img/js) çağırabilmek için yüklenir #}
+{% load static %}
+
+{# Tarayıcı sekmesinde görünecek sayfa başlığı #}
 {% block title %}Kayıt Ol | UniNews{% endblock %}
 
+{# Bu sayfaya özel CSS eklemek için kullanılan blok #}
+{% block extra_css %}
+    {# register sayfasına özel css dosyası #}
+    <link rel="stylesheet" href="{% static 'css/register.css' %}">
+{% endblock %}
+
+{# Sayfanın ana içeriği #}
 {% block content %}
 
-<section class="auth-section">
+<!-- Sayfayı ortalayan ana kapsayıcı (dikey/yatay center) -->
+<div class="full-page-center">
+
+    <!-- Kayıt formunun kart görünümü -->
     <div class="auth-card">
-        <div class="text-center mb-3">
-            <div class="logo-circle mb-2 mx-auto">
-                <i class="bi bi-lightning-fill"></i>
+
+        <!-- Logo alanı (üstte ortalı) -->
+        <div class="text-center mb-2">
+            <div class="logo-icon">
+                <!-- Logo görseli static dizininden çekilir -->
+                <img src="{% static 'img/uninews-logo.png' %}" alt="UniNews Logo">
             </div>
-            <h1 class="h5 fw-bold mb-1">UniNews’e Katıl</h1>
-            <p class="small text-muted mb-0">
-                Kendi haberlerini paylaş, kulüp duyurularını duyur, etkinliklerini öne çıkar.
-            </p>
         </div>
 
-        {% if form.errors %}
-            <div class="alert alert-danger small mb-3">
-                Lütfen formu kontrol edin.
-            </div>
-        {% endif %}
+        <!-- Sayfa ana başlığı -->
+        <h1 class="auth-title">UniNews’e Katıl</h1>
 
-        <form method="post" novalidate>
+        <!-- Sayfa açıklama metni -->
+        <p class="auth-subtitle">
+            Kendi haberlerini paylaş, kulüp duyurularını duyur, etkinliklerini öne çıkar.
+        </p>
+
+        <!-- Kayıt formu: POST ile server'a gönderilir -->
+        <form method="post">
+
+            {# CSRF güvenliği için Django token (zorunlu) #}
             {% csrf_token %}
 
-            <div class="mb-2">
-                <label class="form-label small fw-semibold">Kullanıcı adı</label>
-                <input type="text" name="username" class="form-control form-control-sm"
-                       placeholder="kampuslegens">
-            </div>
-            <div class="mb-2">
-                <label class="form-label small fw-semibold">E-posta</label>
-                <input type="email" name="email" class="form-control form-control-sm"
-                       placeholder="ornek.ogrenci@uninews.edu">
-            </div>
-            <div class="mb-2">
-                <label class="form-label small fw-semibold">Üniversite</label>
-                <input type="text" name="university" class="form-control form-control-sm"
-                       placeholder="Örnek Üniversitesi">
-            </div>
-            <div class="mb-2">
-                <label class="form-label small fw-semibold">Şifre</label>
-                <input type="password" name="password1" class="form-control form-control-sm"
-                       placeholder="••••••••">
-            </div>
-            <div class="mb-3">
-                <label class="form-label small fw-semibold">Şifre (Tekrar)</label>
-                <input type="password" name="password2" class="form-control form-control-sm"
-                       placeholder="••••••••">
+            <!-- KULLANICI ADI -->
+            <div class="form-group-custom">
+                <!-- Label ile input id eşleşir -->
+                <label for="username">Kullanıcı adı</label>
+
+                <!-- Kullanıcı adını alır -->
+                <input
+                    type="text"
+                    id="username"
+                    name="username"
+                    class="form-control-custom"
+                    placeholder="kampuslegens"
+
+                    {# Form hata verirse kullanıcı değerini kaybetmesin diye önceki değeri basar #}
+                    value="{{ form.username.value|default_if_none:'' }}"
+
+                    {# Boş gönderilmesini engeller (frontend validation) #}
+                    required>
             </div>
 
-            <div class="form-check small mb-3">
-                <input class="form-check-input" type="checkbox" value="" id="kvkk">
-                <label class="form-check-label" for="kvkk">
-                    Kullanım şartlarını ve KVKK metnini kabul ediyorum.
-                </label>
+            <!-- EMAIL -->
+            <div class="form-group-custom">
+                <label for="email">E-posta</label>
+
+                <!-- Kullanıcının e-posta adresini alır -->
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    class="form-control-custom"
+                    placeholder="ornek.ogrenci@uninews.edu"
+
+                    {# Form tekrar render olunca eski değeri input içinde tutar #}
+                    value="{{ form.email.value|default_if_none:'' }}"
+
+                    required>
             </div>
 
-            <button type="submit" class="btn btn-uninews w-100 btn-sm mb-2">
-                <i class="bi bi-person-plus me-1"></i> Kayıt Ol
+            <!-- ÜNİVERSİTE (YAZARAK) -->
+            <div class="form-group-custom">
+                <label for="id_university_name">Üniversite</label>
+
+                <!-- Üniversite adını manuel yazdırarak alır -->
+                <input
+                    id="id_university_name"
+                    name="university_name"
+                    class="form-control-custom"
+                    required
+
+                    {# Form yeniden açılırsa girilen üniversite değerini korur #}
+                    value="{{ form.university_name.value|default_if_none:'' }}"
+
+                    placeholder="Üniversite yaz">
+            </div>
+
+            <!-- BÖLÜM (YAZARAK) -->
+            <div class="form-group-custom">
+                <label for="id_department_name">Bölüm</label>
+
+                <!-- Bölüm adını manuel yazdırarak alır -->
+                <input
+                    id="id_department_name"
+                    name="department_name"
+                    class="form-control-custom"
+                    required
+
+                    {# Form yeniden render edilince girilen bölüm değerini korur #}
+                    value="{{ form.department_name.value|default_if_none:'' }}"
+
+                    placeholder="Bölüm yaz">
+            </div>
+
+            <!-- ŞİFRE -->
+            <div class="form-group-custom">
+                <label for="password1">Şifre</label>
+
+                <!-- 1. şifre alanı -->
+                <input
+                    type="password"
+                    id="password1"
+                    name="password1"
+                    class="form-control-custom"
+                    placeholder="•••••••"
+                    required>
+            </div>
+
+            <!-- ŞİFRE TEKRAR -->
+            <div class="form-group-custom">
+                <label for="password2">Şifre (Tekrar)</label>
+
+                <!-- Şifre doğrulama (eşleşme kontrolü backend'de yapılır) -->
+                <input
+                    type="password"
+                    id="password2"
+                    name="password2"
+                    class="form-control-custom"
+                    placeholder="•••••••"
+                    required>
+            </div>
+
+            <!-- KVKK -->
+            <div class="form-inline-custom">
+                <div class="form-check m-0">
+
+                    <!-- KVKK/şartlar kabul checkbox'ı (zorunlu) -->
+                    <input class="form-check-input" type="checkbox" id="kvkk" required>
+
+                    <!-- Checkbox metni -->
+                    <label class="form-check-label small" for="kvkk">
+                        Kullanım şartlarını ve KVKK metnini kabul ediyorum.
+                    </label>
+                </div>
+            </div>
+
+            <!-- Formu gönderir (kayıt oluşturma) -->
+            <button type="submit" class="btn-primary-custom btn-block mb-2">
+                Kayıt Ol
             </button>
+
+            <!-- Alternatif giriş ayırıcı -->
+            <div class="divider">
+                <span>veya</span>
+            </div>
+
+            <!-- Google ile kayıt butonu (şu an UI, entegrasyon yoksa sadece butondur) -->
+            <button type="button" class="btn-secondary-custom btn-block mb-2">
+                <i class="bi bi-google me-2"></i>Google ile kayıt ol
+            </button>
+
+            <!-- Login sayfasına yönlendirme -->
+            <p class="text-center-small mt-1">
+                Zaten hesabın var mı?
+                <a href="{% url 'login' %}" class="link-muted">Giriş yap</a>
+            </p>
+
         </form>
-
-        <div class="auth-divider my-3">
-            <span>veya</span>
-        </div>
-
-        <button class="btn btn-outline-uninews w-100 btn-sm mb-2">
-            <i class="bi bi-google me-1"></i> Google ile kayıt ol
-        </button>
-
-        <p class="small text-center mb-0 mt-2">
-            Zaten hesabın var mı?
-            <a href="{% url 'login' %}" class="link-orange text-decoration-none fw-semibold">
-                Giriş yap
-            </a>
-        </p>
     </div>
-</section>
+</div>
 
+{# content bloğu biter #}
 {% endblock %}

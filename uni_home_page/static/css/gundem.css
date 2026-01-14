@@ -1,0 +1,393 @@
+/* ----------------------------------------------------
+   SAYFA LAYOUT & BAŞLIK
+---------------------------------------------------- */
+
+.page-two-column {
+    display: grid;
+    grid-template-columns: 3fr 1.2fr;
+    gap: 2rem;
+    margin-top: 1.5rem;
+}
+
+@media (max-width: 992px) {
+    .page-two-column {
+        grid-template-columns: 1fr;
+    }
+}
+
+.page-title {
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin-bottom: 0.3rem;
+}
+
+.page-subtitle {
+    font-size: 0.98rem;
+    color: var(--text-muted);
+    margin-bottom: 1.2rem;
+}
+
+/* ----------------------------------------------------
+   FİLTRE VE ARAMA
+---------------------------------------------------- */
+
+.gundem-filter-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.7rem;
+}
+
+.filter-pills {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.filter-pill {
+    border: none;
+    outline: none;
+    padding: 6px 11px;
+    border-radius: 999px;
+    background: #e5edff;
+    color: #1d4ed8;
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.filter-pill.active {
+    background: #1d4ed8;
+    color: #ffffff;
+}
+
+.search-input-wrapper {
+    margin-bottom: 1.1rem;
+}
+
+.search-input {
+    border-radius: 999px;
+    border: 1px solid #d4d4d8;
+    padding: 0.55rem 0.9rem;
+    font-size: 0.9rem;
+}
+
+/* ----------------------------------------------------
+   Modern Gündem kartı
+---------------------------------------------------- */
+
+.news-card.news-card-modern {
+    padding: 0;
+    border-radius: 24px;
+    background: #ffffff;
+    box-shadow: var(--shadow-soft);
+    overflow: hidden;
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+    margin-bottom: 1.6rem;
+}
+
+.news-card.news-card-modern:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 18px 40px rgba(15, 23, 42, 0.12);
+}
+
+/* Üstte geniş görsel */
+
+.news-card-modern .news-media {
+    position: relative;
+    height: 210px;
+    overflow: hidden;
+}
+
+.news-card-modern .news-media-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.25s ease;
+}
+
+.news-card-modern:hover .news-media-img {
+    transform: scale(1.05);
+}
+
+/* Görsel üzeri chip */
+
+.news-card-modern .news-media-chip {
+    position: absolute;
+    left: 16px;
+    top: 14px;
+}
+
+.news-card-modern .chip-label {
+    padding: 4px 10px;
+    border-radius: var(--radius-pill);
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    background: rgba(15, 23, 42, 0.82);
+    color: #ffffff;
+}
+
+/* İçerik gövdesi */
+
+.news-card-modern .news-body {
+    padding: 14px 18px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+/* Üst meta satırı */
+
+.news-card-modern .news-body-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    color: var(--text-muted);
+    gap: 10px;
+}
+
+.news-card-modern .news-tag {
+    padding: 3px 9px;
+    border-radius: var(--radius-pill);
+    background: #e0ebff;
+    color: #1d4ed8;
+    font-weight: 500;
+    font-size: 11px;
+}
+
+.news-card-modern .news-datetime i {
+    margin-right: 3px;
+    font-size: 13px;
+}
+
+.news-card-modern .news-datetime .dot {
+    margin: 0 4px;
+}
+
+/* Başlık + yazar */
+
+.news-card-modern .news-title {
+    font-size: 18px;
+}
+
+.news-card-modern .news-author-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.news-card-modern .news-author i {
+    margin-right: 4px;
+}
+
+.news-card-modern .news-author-role {
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: #e0f2fe;
+    color: #0369a1;
+    font-size: 11px;
+    font-weight: 500;
+}
+
+/* Açıklama */
+
+.news-card-modern .news-desc {
+    font-size: 14px;
+    color: var(--text-muted);
+}
+
+/* Alt bar: istatistik + buton */
+
+.news-card-modern .news-body-bottom {
+    margin-top: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    color: var(--text-muted);
+    gap: 10px;
+}
+
+.news-card-modern .news-stats {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.news-card-modern .news-stats i {
+    margin-right: 3px;
+}
+
+.news-card-modern .news-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 12px;
+    border-radius: var(--radius-pill);
+    background: #eef2ff;
+    color: #1d4ed8;
+    font-size: 12px;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.news-card-modern .news-action i {
+    font-size: 17px;
+}
+
+/* Mobil / tablet */
+
+@media (max-width: 768px) {
+    .news-card-modern .news-media {
+        height: 180px;
+    }
+
+    .news-card-modern .news-body-top {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .news-card-modern .news-body-bottom {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .news-card-modern .news-action {
+        align-self: flex-end;
+    }
+}
+
+/* ----------------------------------------------------
+   SAĞ TARAF / SIDEBAR KARTLARI
+---------------------------------------------------- */
+
+.side-card {
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 1.1rem 1.3rem;
+    margin-bottom: 1.4rem;
+    box-shadow: var(--shadow-soft);
+}
+
+.side-card h3 {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: #1f2937;
+}
+
+/* Basit liste */
+
+.simple-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.simple-list li {
+    font-size: 0.9rem;
+    color: #4b5563;
+    margin-bottom: 0.5rem;
+}
+
+/* Etkinlik listesi */
+
+.event-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.event-list li {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    margin-bottom: 0.7rem;
+}
+
+.event-date {
+    width: 46px;
+    height: 46px;
+    border-radius: 14px;
+    background: #eef2ff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.7rem;
+    color: #1d4ed8;
+    font-weight: 600;
+}
+
+.event-date .day {
+    font-size: 1rem;
+    line-height: 1;
+}
+
+.event-info .event-title {
+    font-size: 0.9rem;
+    margin: 0;
+    color: #111827;
+    font-weight: 600;
+}
+
+.event-info .event-meta {
+    font-size: 0.8rem;
+    margin: 0;
+    color: #6b7280;
+}
+
+/* Tag list */
+
+.tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+}
+
+.tag-list span {
+    background: #f1f5f9;
+    color: #2563eb;
+    padding: 4px 9px;
+    border-radius: 999px;
+    font-size: 0.8rem;
+}
+
+/* Anket */
+
+.poll-question {
+    font-size: 0.9rem;
+    color: #374151;
+    margin-bottom: 0.7rem;
+}
+
+.poll-options {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    margin-bottom: 0.5rem;
+}
+
+.poll-option {
+    border: 1px solid #e5e7eb;
+    background: #f9fafb;
+    border-radius: 999px;
+    padding: 5px 10px;
+    font-size: 0.85rem;
+    text-align: left;
+    cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.poll-option:hover {
+    background: #eef2ff;
+    border-color: #2563eb;
+}
+
+.poll-meta {
+    font-size: 0.78rem;
+    color: #9ca3af;
+}

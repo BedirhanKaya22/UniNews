@@ -1,0 +1,355 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Profilim | UniNews{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/profile.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="un-container">
+
+  <!-- HERO -->
+  <div class="un-hero">
+    <div class="un-hero-left">
+      <div class="un-avatar">
+        {% if profile.avatar %}
+          <img src="{{ profile.avatar.url }}" alt="Avatar">
+        {% else %}
+          <div class="un-avatar-fallback">{{ request.user.username|first|upper }}</div>
+        {% endif %}
+      </div>
+
+      <div class="un-hero-meta">
+        <div class="un-hero-title">
+          <h1>{{ request.user.get_full_name|default:request.user.username }}</h1>
+          <span class="un-pill">@{{ request.user.username }}</span>
+        </div>
+
+        <div class="un-hero-sub">
+          <span class="un-meta">
+            <i class="bi bi-mortarboard"></i>
+            {{ profile.university.name|default:"Üniversite seçilmedi" }}
+          </span>
+          <span class="un-meta">
+            <i class="bi bi-book"></i>
+            {{ profile.department|default:"Bölüm seçilmedi" }}
+          </span>
+          <span class="un-meta">
+            <i class="bi bi-bell"></i>
+            {% if profile.notifications_enabled %}Bildirim açık{% else %}Bildirim kapalı{% endif %}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="un-hero-right">
+      <a class="un-btn un-btn-soft" href="{% url 'edit_profile' %}">
+        <i class="bi bi-pencil-square"></i> Profili Düzenle
+      </a>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="un-grid-3">
+    <div class="un-card un-stat">
+      <div class="un-stat-top">
+        <span class="un-stat-icon"><i class="bi bi-hand-thumbs-up"></i></span>
+        <span class="un-stat-label">Beğeni</span>
+      </div>
+      <div class="un-stat-value">{{ like_count }}</div>
+    </div>
+
+    <div class="un-card un-stat">
+      <div class="un-stat-top">
+        <span class="un-stat-icon"><i class="bi bi-chat-left-dots"></i></span>
+        <span class="un-stat-label">Yorum</span>
+      </div>
+      <div class="un-stat-value">{{ comment_count }}</div>
+    </div>
+
+    <div class="un-card un-stat">
+      <div class="un-stat-top">
+        <span class="un-stat-icon"><i class="bi bi-calendar-event"></i></span>
+        <span class="un-stat-label">Etkinlik</span>
+      </div>
+      <div class="un-stat-value">{{ event_count }}</div>
+    </div>
+  </div>
+
+  <!-- MAIN GRID -->
+  <div class="un-grid-2">
+
+
+    <div class="un-card">
+  <div class="un-card-head">
+    <h3>Bildirimler</h3>
+    <span class="un-muted">
+      {% if unread_count %}{{ unread_count }} okunmadı{% else %}Hepsi okundu{% endif %}
+    </span>
+  </div>
+
+  <div class="un-list">
+    {% for n in notifications %}
+      <div class="un-list-item un-list-item-static">
+        <span class="un-badge {% if n.is_read %}un-badge-ok{% else %}un-badge-warn{% endif %}">
+          {% if n.is_read %}Okundu{% else %}Yeni{% endif %}
+        </span>
+        <span class="un-list-title">{{ n.title }}</span>
+      </div>
+    {% empty %}
+      <div class="un-empty">Henüz bildirim yok.</div>
+    {% endfor %}
+  </div>
+</div>
+
+
+    <!-- Beğenilenler -->
+    <div class="un-card">
+      <div class="un-card-head">
+        <h3>Beğendiğim Haberler</h3>
+        <span class="un-muted">Son 8 içerik</span>
+      </div>
+
+      <div class="un-list">
+        {% for post in liked_posts %}
+          <a class="un-list-item" href="#">
+            <span class="un-tag {{ post.category|lower }}">{{ post.get_category_display }}</span>
+            <span class="un-list-title">{{ post.title }}</span>
+            <i class="bi bi-chevron-right"></i>
+          </a>
+        {% empty %}
+          <div class="un-empty">Henüz beğendiğin haber yok.</div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Hesap bilgileri -->
+    <div class="un-card">
+      <div class="un-card-head">
+        <h3>Hesap Bilgileri</h3>
+        <span class="un-muted">Profil Bilgileri</span>
+      </div>
+
+      <div class="un-kv">
+        <div class="un-kv-row">
+          <span class="k">Kullanıcı adı</span>
+          <span class="v">{{ request.user.username }}</span>
+        </div>
+        <div class="un-kv-row">
+          <span class="k">E-posta</span>
+          <span class="v">{{ request.user.email|default:"—" }}</span>
+        </div>
+        <div class="un-kv-row">
+          <span class="k">Üniversite</span>
+          <span class="v">{{ profile.university.name|default:"—" }}</span>
+        </div>
+        <div class="un-kv-row">
+          <span class="k">Bölüm</span>
+          <span class="v">{{ profile.department|default:"—" }}</span>
+        </div>
+        <div class="un-kv-row">
+          <span class="k">Bildirim</span>
+          <span class="v">
+            {% if profile.notifications_enabled %}Açık{% else %}Kapalı{% endif %}
+          </span>
+        </div>
+      </div>
+
+      <div class="un-card-foot"></div>
+    </div>
+
+    <!-- ✅ Gönderdiğim Haberler -->
+    <div class="un-card">
+      <div class="un-card-head">
+        <h3>Gönderdiğim Haberler</h3>
+        <span class="un-muted">Onay durumu</span>
+      </div>
+
+      <div class="un-tabs">
+        <button type="button" class="un-tab active" onclick="unSwitchMyPosts('pending')">Onay Bekliyor</button>
+        <button type="button" class="un-tab" onclick="unSwitchMyPosts('published')">Yayında</button>
+      </div>
+
+      <div id="unMyPostsPending" class="un-list">
+        {% for post in my_pending_posts %}
+          <div class="un-list-item un-list-item-static">
+            <span class="un-badge un-badge-warn">Onay Bekliyor</span>
+            <span class="un-list-title">{{ post.title }}</span>
+            <span class="un-muted-sm">{{ post.get_category_display }}</span>
+          </div>
+        {% empty %}
+          <div class="un-empty">Onay bekleyen haberin yok.</div>
+        {% endfor %}
+      </div>
+
+      <div id="unMyPostsPublished" class="un-list" style="display:none;">
+        {% for post in my_published_posts %}
+          <div class="un-list-item un-list-item-static">
+            <span class="un-badge un-badge-ok">Yayında</span>
+            <span class="un-list-title">{{ post.title }}</span>
+            <span class="un-muted-sm">{{ post.get_category_display }}</span>
+          </div>
+        {% empty %}
+          <div class="un-empty">Yayında haberin yok.</div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Son görüntülenenler -->
+    <div class="un-card un-full">
+      <div class="un-card-head">
+        <h3>Son Görüntülediklerim</h3>
+        <span class="un-muted">Kategorilere göre</span>
+      </div>
+
+      <div class="un-recent-grid">
+        <div class="un-recent-col">
+          <h4>Gündem</h4>
+          <ul>
+            {% for p in recent_gundem %}<li>{{ p.title }}</li>{% empty %}<li class="un-muted">—</li>{% endfor %}
+          </ul>
+        </div>
+        <div class="un-recent-col">
+          <h4>Etkinlik</h4>
+          <ul>
+            {% for p in recent_etkinlik %}<li>{{ p.title }}</li>{% empty %}<li class="un-muted">—</li>{% endfor %}
+          </ul>
+        </div>
+        <div class="un-recent-col">
+          <h4>Duyuru</h4>
+          <ul>
+            {% for p in recent_duyuru %}<li>{{ p.title }}</li>{% empty %}<li class="un-muted">—</li>{% endfor %}
+          </ul>
+        </div>
+        <div class="un-recent-col">
+          <h4>Kulüp</h4>
+          <ul>
+            {% for p in recent_kulup %}<li>{{ p.title }}</li>{% empty %}<li class="un-muted">—</li>{% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+{% if not request.user.is_staff %}
+<!-- Floating Toggle -->
+<button class="un-fab-mini" type="button" onclick="unTogglePanel()">
+  <i class="bi bi-plus-lg"></i>
+  <span>Haber Yükle</span>
+</button>
+
+<!-- Mini Panel -->
+<div class="un-mini-panel" id="unMiniPanel" data-open="false">
+  <div class="un-mini-head">
+    <div class="un-mini-title">
+      <div class="t">Haber Yükle</div>
+      <div class="s">Admin onayı sonrası yayınlanır</div>
+    </div>
+
+    <div class="un-mini-actions">
+      <button type="button" class="un-mini-btn" title="Küçült" onclick="unMinimizePanel()">
+        <i class="bi bi-dash-lg"></i>
+      </button>
+      <button type="button" class="un-mini-btn" title="Kapat" onclick="unClosePanel()">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+  </div>
+
+  <div class="un-mini-body" id="unMiniBody">
+    <form method="post" enctype="multipart/form-data" class="un-form">
+      {% csrf_token %}
+      <input type="hidden" name="_action" value="submit_post">
+
+      {{ post_form.non_field_errors }}
+
+      <div class="un-form-grid">
+        {% for field in post_form %}
+          <div class="un-field {% if field.name in 'title summary content' %}un-span-2{% endif %}">
+            <label>{{ field.label }}</label>
+            {{ field }}
+            {{ field.errors }}
+          </div>
+        {% endfor %}
+      </div>
+
+      <button class="un-btn un-btn-primary un-btn-block" type="submit">
+        <i class="bi bi-send"></i> Haberi Yolla
+      </button>
+    </form>
+
+  </div>
+</div>
+{% endif %}
+
+<script>
+  const panel = () => document.getElementById("unMiniPanel");
+
+  function unTogglePanel(){
+    const el = panel();
+    const isOpen = el.getAttribute("data-open") === "true";
+    if(isOpen) return unClosePanel();
+    el.classList.add("show");
+    el.setAttribute("data-open", "true");
+    el.classList.remove("minimized");
+  }
+
+  function unClosePanel(){
+    const el = panel();
+    el.classList.remove("show");
+    el.setAttribute("data-open", "false");
+    el.classList.remove("minimized");
+  }
+
+  function unMinimizePanel(){
+    const el = panel();
+    el.classList.toggle("minimized");
+  }
+
+  function unSwitchMyPosts(which){
+    const pending = document.getElementById("unMyPostsPending");
+    const published = document.getElementById("unMyPostsPublished");
+    const tabs = document.querySelectorAll(".un-tabs .un-tab");
+
+    tabs.forEach(t => t.classList.remove("active"));
+
+    if(which === "pending"){
+      pending.style.display = "block";
+      published.style.display = "none";
+      tabs[0].classList.add("active");
+    }else{
+      pending.style.display = "none";
+      published.style.display = "block";
+      tabs[1].classList.add("active");
+    }
+  }
+
+   // Form submit: disable + loading
+  document.addEventListener("DOMContentLoaded", function () {
+    const form = document.querySelector(".un-mini-panel .un-form");
+    if (form) {
+      form.addEventListener("submit", function () {
+        const btn = form.querySelector('button[type="submit"]');
+        if (btn) {
+          btn.disabled = true;
+          btn.innerHTML = '<i class="bi bi-hourglass-split"></i> Gönderiliyor...';
+        }
+      });
+    }
+
+    // Başarılı gönderimden sonra panel otomatik kapansın
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("sent") === "1") {
+      if (typeof unClosePanel === "function") unClosePanel();
+      params.delete("sent");
+      const newUrl = window.location.pathname + (params.toString() ? "?" + params.toString() : "");
+      window.history.replaceState({}, "", newUrl);
+    }
+  });
+
+</script>
+
+{% endblock %}

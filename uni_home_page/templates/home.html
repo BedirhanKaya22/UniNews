@@ -1,272 +1,270 @@
-{% extends "base.html" %}
+{# AUTO-YORUMLU SÜRÜM – orijinal dosya kesilmeden korunmuştur #}
+{# base.html şablonunu miras alır (nav/footer/tema vb.) #}
+{% extends 'base.html' %}
+{# static etiketi: home.css gibi statik dosyaları çağırmak için #}
+{% load static %}
 
-{% block title %}Ana Sayfa | UniNews{% endblock %}
-{% block nav_home_active %}active{% endblock %}
+{# Sayfa başlığı: tarayıcı sekmesinde görünür #}
+{% block title %}UniNews // LIVE CAMPUS{% endblock %}
 
+{# Üstteki cmd/hint satırında görünen kısa rota etiketi #}
+{% block page_hint %}home/live{% endblock %}
+
+{# Bu sayfaya özel CSS dosyası (home.css) #}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/home.css' %}">
+{% endblock %}
+
+{# Sayfanın ana içerik bloğu: 3 kolonlu Live Campus grid #}
 {% block content %}
 
-<!-- HERO / ÜST BÖLÜM -->
-<section class="hero-section mb-4">
-    <div class="row g-4 align-items-center">
-        <div class="col-lg-7">
-            <div class="hero-card">
-                <div class="hero-badge">
-                    <i class="bi bi-lightning-charge-fill me-1"></i> Bugün Kampüste
-                </div>
-                <h1 class="hero-title">
-                    Kampüsün <span>nabzını</span> UniNews ile tut.
-                </h1>
-                <p class="hero-text">
-                    Etkinlikler, duyurular, kulüpler ve çok daha fazlası.  
-                    Hepsi tek bir yerde, öğrencilerin dilinden.
-                </p>
-                <div class="d-flex flex-wrap gap-2 mt-3">
-                    <button class="btn btn-uninews btn-sm">
-                        <i class="bi bi-fire me-1"></i> Trend Haberler
-                    </button>
-                    <button class="btn btn-outline-uninews btn-sm">
-                        <i class="bi bi-calendar-event me-1"></i> Etkinlik Takvimi
-                    </button>
-                </div>
-                <div class="mt-4 d-flex flex-wrap gap-2 hero-tags small">
-                    <span>#burs</span>
-                    <span>#baharşenliği</span>
-                    <span>#hackathon</span>
-                    <span>#kulüpfest</span>
-                </div>
-            </div>
+<!-- 3 kolonlu ana grid: Sol (feed/tags) + Orta (stream) + Sağ (AI/quick) -->
+<div class="lc-grid">
+
+<!-- Sol panel: statik live feed + trend tag'ler -->
+  <!-- LEFT: LIVE FEED -->
+  <aside class="lc-left">
+    <div class="lc-panel lc-feed">
+      <div class="lc-panel-head">
+        <div class="lc-head-title">
+          <i class="bi bi-broadcast"></i>
+          <span class="lc-mono">LIVE FEED</span>
         </div>
-    <div class="col-lg-5">
-        <div class="hero-side-card">
-            <h6 class="mb-1 fw-bold d-flex align-items-center">
-                <i class="bi bi-activity me-2"></i> Anlık Duyurular
-            </h6>
+        <span class="lc-badge">now</span>
+      </div>
 
-            <!-- Dinamik Saat & Tarih -->
-            <div class="text-muted small mb-2">3 Haziran 2025 • 15:42</div>
-
-            <ul class="list-unstyled small mb-0 hero-ticker">
-                <li><i class="bi bi-dot"></i> Final sınav takvimi güncellendi.</li>
-                <li><i class="bi bi-dot"></i> Yurt başvuruları için son gün: 20 Nisan.</li>
-                <li><i class="bi bi-dot"></i> Kariyer günleri başvuruları açıldı.</li>
-                <li><i class="bi bi-dot"></i> Robotik kulübü yeni üyeler arıyor.</li>
-            </ul>
-        </div>
-    </div>
-    </div>
-</section>
-
-<div class="row g-4">
-
-    <!-- Sol taraf: haberler -->
-    <div class="col-lg-8">
-
-        <!-- Öne çıkan haber (büyük kart) -->
-        <div class="card featured-article mb-4">
-            <div class="row g-0">
-                <div class="col-md-6">
-                    <div class="featured-img-wrap">
-                        <img src="https://images.pexels.com/photos/207691/pexels-photo-207691.jpeg" class="img-fluid h-100 object-fit-cover" alt="Kampüs">
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="card-body d-flex flex-column h-100">
-                        <span class="badge rounded-pill category-badge">Gündem</span>
-                        <h2 class="h5 card-title mt-2">
-                            Kütüphane Final Haftasında 24 Saat Açık
-                        </h2>
-                        <p class="card-text small text-muted mb-2">
-                            Final sezonu boyunca kütüphane 24 saat açık kalacak. Çalışma salonları, grup çalışması alanları ve sessiz bölümler güncellendi.
-                        </p>
-                        <p class="card-text meta small mb-1">
-                            <i class="bi bi-clock me-1"></i> 3 saat önce
-                            <span class="mx-1">•</span>
-                            <i class="bi bi-person-fill me-1"></i> UniNews Editör
-                        </p>
-                        <div class="mt-auto d-flex justify-content-between align-items-center">
-                            <a href="#" class="btn btn-sm btn-uninews-soft">
-                                Haberi Oku <i class="bi bi-arrow-right-short ms-1"></i>
-                            </a>
-                            <button class="btn btn-like btn-sm">
-                                <i class="bi bi-heart"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+      <div class="lc-feed-list">
+        <div class="lc-feed-item hot">
+          <div class="t">AZ ÖNCE</div>
+          <div class="m">Final sınav takvimi güncellendi</div>
+          <div class="s">Öğrenci İşleri • 2 dk önce</div>
         </div>
 
-        <!-- Haber kartları listesi (burayı Django for ile dinamik yaparsın) -->
-        <div class="news-list">
-
-            <!-- ÖRNEK HABER KARTI 1 -->
-            <article class="news-card card mb-3">
-                <div class="row g-0 align-items-center">
-                    <div class="col-sm-4">
-                        <div class="news-thumb">
-                            <img src="https://images.pexels.com/photos/267885/pexels-photo-267885.jpeg" class="img-fluid h-100 object-fit-cover" alt="Etkinlik">
-                        </div>
-                    </div>
-                    <div class="col-sm-8">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-center mb-1">
-                                <span class="badge category-badge event">Etkinlik</span>
-                                <small class="text-muted"><i class="bi bi-calendar-event me-1"></i> 12 Mayıs 2025</small>
-                            </div>
-                            <h5 class="card-title mb-1">Bahar Şenliği Tarihleri Açıklandı</h5>
-                            <p class="card-text small text-muted mb-2">
-                                Konserler, atölyeler, kulüp stantları ve sürpriz etkinlikler ile dolu bir program açıklandı...
-                            </p>
-                            <div class="d-flex justify-content-between align-items-center small">
-                                <div class="d-flex align-items-center gap-2">
-                                    <span><i class="bi bi-eye me-1"></i> 1.2K</span>
-                                    <span><i class="bi bi-heart me-1"></i> 87</span>
-                                </div>
-                                <a href="#" class="stretched-link text-decoration-none fw-semibold read-more">
-                                    Devamını oku <i class="bi bi-arrow-right-short"></i>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </article>
-
-            <!-- ÖRNEK HABER KARTI 2 -->
-            <article class="news-card card mb-3">
-                <div class="row g-0 align-items-center">
-                    <div class="col-sm-4">
-                        <div class="news-thumb">
-                            <img src="https://images.pexels.com/photos/256490/pexels-photo-256490.jpeg" class="img-fluid h-100 object-fit-cover" alt="Duyuru">
-                        </div>
-                    </div>
-                    <div class="col-sm-8">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-center mb-1">
-                                <span class="badge category-badge announcement">Duyuru</span>
-                                <small class="text-muted"><i class="bi bi-clock me-1"></i> Dün</small>
-                            </div>
-                            <h5 class="card-title mb-1">Burs Başvuruları İçin Son Tarih Yaklaşıyor</h5>
-                            <p class="card-text small text-muted mb-2">
-                                2025–2026 yılı burs başvurusunda bulunmak isteyen öğrenciler için son tarih güncellendi...
-                            </p>
-                            <div class="d-flex justify-content-between align-items-center small">
-                                <div class="d-flex align-items-center gap-2">
-                                    <span><i class="bi bi-eye me-1"></i> 980</span>
-                                    <span><i class="bi bi-heart me-1"></i> 52</span>
-                                </div>
-                                <a href="#" class="stretched-link text-decoration-none fw-semibold read-more">
-                                    Devamını oku <i class="bi bi-arrow-right-short"></i>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </article>
-
-            <!-- ÖRNEK HABER KARTI 3 -->
-            <article class="news-card card mb-3">
-                <div class="row g-0 align-items-center">
-                    <div class="col-sm-4">
-                        <div class="news-thumb">
-                            <img src="https://images.pexels.com/photos/3059748/pexels-photo-3059748.jpeg" class="img-fluid h-100 object-fit-cover" alt="Kulüp">
-                        </div>
-                    </div>
-                    <div class="col-sm-8">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-center mb-1">
-                                <span class="badge category-badge club">Kulüp</span>
-                                <small class="text-muted"><i class="bi bi-calendar-event me-1"></i> 5 Haziran 2025</small>
-                            </div>
-                            <h5 class="card-title mb-1">Yapay Zeka Topluluğu Hackathon Duyurdu</h5>
-                            <p class="card-text small text-muted mb-2">
-                                48 saatlik kod maratonuna tüm bölümlerden öğrenciler takım olarak katılabilecek...
-                            </p>
-                            <div class="d-flex justify-content-between align-items-center small">
-                                <div class="d-flex align-items-center gap-2">
-                                    <span><i class="bi bi-eye me-1"></i> 2.1K</span>
-                                    <span><i class="bi bi-heart me-1"></i> 143</span>
-                                </div>
-                                <a href="#" class="stretched-link text-decoration-none fw-semibold read-more">
-                                    Devamını oku <i class="bi bi-arrow-right-short"></i>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </article>
-
-            <!-- Sayfalama -->
-            <nav aria-label="Sayfalama" class="mt-4">
-                <ul class="pagination pagination-sm justify-content-center">
-                    <li class="page-item disabled">
-                        <a class="page-link" href="#" tabindex="-1">Önceki</a>
-                    </li>
-                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item">
-                        <a class="page-link" href="#">Sonraki</a>
-                    </li>
-                </ul>
-            </nav>
-
+        <div class="lc-feed-item">
+          <div class="t">12:30</div>
+          <div class="m">Kütüphane yoğunluğu arttı</div>
+          <div class="s">Kampüs • bugün</div>
         </div>
+
+        <div class="lc-feed-item">
+          <div class="t">11:10</div>
+          <div class="m">Robotik kulübü yeni üyeler arıyor</div>
+          <div class="s">Kulüpler • bugün</div>
+        </div>
+
+        <div class="lc-feed-item">
+          <div class="t">Dün</div>
+          <div class="m">Kariyer Günleri başvuruları açıldı</div>
+          <div class="s">Kariyer • dün</div>
+        </div>
+
+        <div class="lc-feed-item dim">
+          <div class="t">Log</div>
+          <div class="m">Sistem kararlı. Yayın akışı izleniyor…</div>
+          <div class="s">uninews://monitor</div>
+        </div>
+      </div>
+
+      <div class="lc-panel-foot">
+        <span class="lc-muted">İpucu:</span> sağdaki AI’ye “bugün kampüste ne var?” yaz.
+      </div>
     </div>
 
-    <!-- Sağ taraf: sidebar -->
-    <div class="col-lg-4">
-
-        <!-- Trend etiketler -->
-        <div class="card mb-4 sidebar-card">
-            <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center">
-                <h6 class="mb-0 fw-bold">Trend Etiketler</h6>
-                <i class="bi bi-hash text-orange"></i>
-            </div>
-            <div class="card-body">
-                <div class="tag-cloud">
-                    <a href="#">#burs</a>
-                    <a href="#">#erasmus</a>
-                    <a href="#">#yazokulu</a>
-                    <a href="#">#gönüllülük</a>
-                    <a href="#">#girişimcilik</a>
-                    <a href="#">#sporturnuvası</a>
-                </div>
-            </div>
+    <div class="lc-panel lc-tags">
+      <div class="lc-panel-head">
+        <div class="lc-head-title">
+          <i class="bi bi-hash"></i>
+          <span class="lc-mono">TREND TAGS</span>
         </div>
+      </div>
 
-        <!-- Popüler Haberler -->
-        <div class="card mb-4 sidebar-card">
-            <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center">
-                <h6 class="mb-0 fw-bold">Popüler Haberler</h6>
-                <i class="bi bi-fire text-orange"></i>
-            </div>
-            <div class="list-group list-group-flush small">
-                <a href="#" class="list-group-item list-group-item-action">
-                    Öğrenci Konseyi Seçim Sonuçları Açıklandı
-                </a>
-                <a href="#" class="list-group-item list-group-item-action">
-                    Kariyer Günleri’ne Rekor Katılım
-                </a>
-                <a href="#" class="list-group-item list-group-item-action">
-                    Yeni Açılan Çalışma Alanları Tanıtıldı
-                </a>
-            </div>
-        </div>
-
-        <!-- Hızlı Duyurular -->
-        <div class="card mb-4 sidebar-card">
-            <div class="card-body">
-                <h6 class="fw-bold mb-2 d-flex align-items-center">
-                    <i class="bi bi-megaphone-fill me-2 text-orange"></i> Hızlı Duyurular
-                </h6>
-                <ul class="small mb-0 list-unstyled">
-                    <li class="mb-1">Yurt başvuruları için son gün: 20 Nisan.</li>
-                    <li class="mb-1">Yaz okulu kayıtları 1 Haziran’da başlıyor.</li>
-                    <li class="mb-1">Teknofest proje başvuruları devam ediyor.</li>
-                </ul>
-            </div>
-        </div>
+      <div class="lc-chip-wrap">
+        <a class="lc-chip" href="#">#burs</a>
+        <a class="lc-chip" href="#">#erasmus</a>
+        <a class="lc-chip" href="#">#yazokulu</a>
+        <a class="lc-chip" href="#">#gönüllülük</a>
+        <a class="lc-chip" href="#">#girişimcilik</a>
+        <a class="lc-chip" href="#">#sporturnuvası</a>
+      </div>
     </div>
+  </aside>
+
+
+<!-- Orta panel: focus/hero + posts stream (posts queryset'i) -->
+  <!-- CENTER: FOCUS + STREAM -->
+  <section class="lc-main">
+
+    <!-- FOCUS PANEL (hero yerine OS ekranı gibi) -->
+    <article class="lc-panel lc-focus">
+      <div class="lc-focus-top">
+        <span class="lc-focus-kicker lc-mono">UNINEWS // LIVE CAMPUS</span>
+        <span class="lc-focus-pill">
+          <i class="bi bi-shield-check"></i> doğrulanmış kampüs akışı
+        </span>
+      </div>
+
+      <h1 class="lc-focus-title">
+        Kampüs <span class="neo">gerçek zamanlı</span> akıyor.
+      </h1>
+
+      <p class="lc-focus-desc">
+        Haberler, duyurular ve etkinlikler tek ekranda.
+        Sağdaki UniNews AI’ye sor — “özetle”, “planla”, “öne çıkar”.
+      </p>
+
+      <div class="lc-focus-actions">
+        <a class="lc-btn" href="{% url 'gundem' %}">
+          <i class="bi bi-lightning-charge"></i> Gündeme git
+        </a>
+        <a class="lc-btn ghost" href="{% url 'etkinlikler' %}">
+          <i class="bi bi-calendar-event"></i> Etkinlikleri aç
+        </a>
+      </div>
+
+      <div class="lc-focus-meter">
+        <div class="m-label lc-mono">KAMPÜS PULSE</div>
+        <div class="m-bar"><span></span></div>
+        <div class="m-sub">yüksek aktivite • son 24 saat</div>
+      </div>
+    </article>
+
+    <!-- STREAM -->
+    <div class="lc-stream-head">
+      <div class="lc-stream-title">
+        <i class="bi bi-stack"></i>
+        <span class="lc-mono">STREAM</span>
+      </div>
+      <div class="lc-stream-hint lc-muted">en yeni gönderiler</div>
+    </div>
+
+{# posts: view'den gelen onaylı gönderiler listesi #}
+    {% for post in posts %}
+      <article class="lc-post">
+        <a class="lc-post-media" href="{% url 'post_detail' post.pk %}">
+{# Kapak görseli varsa cover.url kullanılır; yoksa placeholder (picsum) kullanılır #}
+          {% if post.cover %}
+{# Kapak görseli varsa cover.url kullanılır; yoksa placeholder (picsum) kullanılır #}
+            <img src="{{ post.cover.url }}" alt="">
+          {% else %}
+            <img src="https://picsum.photos/seed/gundem{{ post.pk }}/900/450" alt="">
+          {% endif %}
+          <span class="lc-post-chip">GÜNDEM</span>
+        </a>
+
+        <div class="lc-post-body">
+          <div class="lc-post-meta">
+            <span class="lc-meta-left">
+              <i class="bi bi-calendar3"></i> {{ post.created_at|date:"d.m.Y" }}
+              <span class="dot">•</span>
+              <i class="bi bi-clock"></i> {{ post.created_at|date:"H:i" }}
+            </span>
+
+            <span class="lc-meta-right">
+              <i class="bi bi-person-badge"></i> @{{ post.author.username }}
+              <span class="role">
+                {% if post.author.is_staff %}Onaylı{% else %}Üye{% endif %}
+              </span>
+            </span>
+          </div>
+
+          <h2 class="lc-post-title">
+            <a href="{% url 'post_detail' post.pk %}">{{ post.title }}</a>
+          </h2>
+
+          <p class="lc-post-desc">
+{# İçerik kısaltma: kartta uzun metin taşmasın diye #}
+            {{ post.content|truncatechars:170 }}
+          </p>
+
+          <div class="lc-post-foot">
+            <div class="lc-post-stats">
+              <span><i class="bi bi-eye"></i> {{ post.views.count }}</span>
+              <span><i class="bi bi-heart"></i> {{ post.likes.count }}</span>
+              <span><i class="bi bi-chat"></i> {{ post.comments.count }}</span>
+            </div>
+
+            <a class="lc-post-read" href="{% url 'post_detail' post.pk %}">
+              okumaya devam <i class="bi bi-arrow-right-short"></i>
+            </a>
+          </div>
+        </div>
+      </article>
+
+    {% empty %}
+      <div class="lc-panel lc-empty">
+        Henüz gündem içeriği yok.
+      </div>
+    {% endfor %}
+
+  </section>
+
+
+<!-- Sağ panel: AI konsol (form + history) ve quick liste -->
+  <!-- RIGHT: AI CONSOLE + QUICK LISTS -->
+  <aside class="lc-right">
+
+    <!-- AI CONSOLE (senin AI formunu bozmadım, sadece görünüm değişti) -->
+    <div class="lc-panel lc-ai">
+      <div class="lc-panel-head">
+        <div class="lc-head-title">
+          <i class="bi bi-cpu"></i>
+          <span class="lc-mono">UNINEWS AI</span>
+        </div>
+
+{# AI geçmişini temizleme: clear_ai_history view'i #}
+        <form method="post" action="{% url 'clear_ai_history' %}">
+          {% csrf_token %}
+          <button class="lc-mini-btn" type="submit" title="Geçmişi temizle">
+            <i class="bi bi-trash3"></i>
+          </button>
+        </form>
+      </div>
+
+      <div class="lc-ai-sub">Komut yaz: <span class="lc-mono">özetle</span>, <span class="lc-mono">planla</span>, <span class="lc-mono">öne çıkar</span></div>
+
+      <form method="post" class="lc-ai-form">
+        {% csrf_token %}
+        <div class="lc-ai-input">
+{# AI soru input'u: form.question field render edilir #}
+          {{ form.question }}
+        </div>
+        <button class="lc-btn mini" type="submit">
+          <i class="bi bi-send"></i> Sor
+        </button>
+      </form>
+
+      <div class="lc-ai-log">
+        {% for m in history %}
+          <div class="lc-ai-item">
+            <div class="q"><span class="lc-mono">&gt;</span> {{ m.question }}</div>
+            <div class="a">{{ m.answer }}</div>
+            <div class="t">{{ m.created_at }}</div>
+          </div>
+        {% empty %}
+          <div class="lc-ai-empty">
+            <span class="lc-mono">&gt;</span> Henüz komut yok. “bugün kampüste ne var?” dene.
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="lc-panel lc-quick">
+      <div class="lc-panel-head">
+        <div class="lc-head-title">
+          <i class="bi bi-megaphone"></i>
+          <span class="lc-mono">QUICK</span>
+        </div>
+      </div>
+
+      <ul class="lc-list">
+        <li><span class="k">Duyuru</span> Yaz okulu kayıtları 1 Haziran’da başlıyor.</li>
+        <li><span class="k">Duyuru</span> Teknofest proje başvuruları devam ediyor.</li>
+        <li><span class="k">Popüler</span> Kariyer Günleri’ne rekor katılım.</li>
+      </ul>
+    </div>
+
+  </aside>
+
 </div>
 
 {% endblock %}

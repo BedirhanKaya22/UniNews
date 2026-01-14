@@ -1,0 +1,168 @@
+{# AUTO-YORUMLU SÜRÜM – orijinal dosya kesilmeden korunmuştur #}
+{# base.html ana şablonunu miras alır #}
+{% extends "base.html" %}
+{# static etiketi: CSS/JS dosyalarını çağırmak için #}
+{% load static %}
+{# tz etiketi: localtime filtresiyle zaman dilimi dönüşümü #}
+{% load tz %}
+
+{# Tarayıcı sekmesinde görünen sayfa başlığı #}
+{% block title %}Kullanıcı Roller | UniNews{% endblock %}
+
+{# Bu sayfaya özel CSS dosyaları #}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/admin_dashboard.css' %}">
+{% endblock %}
+
+{# Sayfanın ana içerik bloğu #}
+{% block content %}
+<div class="page-two-column">
+  <section>
+    <h1 class="page-title">Kullanıcı Rol Yönetimi</h1>
+    <p class="page-subtitle">Kullanıcıların rollerini ver, istatistiklerini gör.</p>
+
+    <form method="get" class="search-input-wrapper mb-3 d-flex gap-2">
+      <input name="q" value="{{ q }}" class="search-input flex-grow-1" placeholder="Kullanıcı ara (username)...">
+      <button class="btn-secondary-custom" type="submit">Ara</button>
+    </form>
+
+    <article class="dash-card">
+      <h3>Kullanıcılar</h3>
+
+{# Kullanıcı listesi tablosu: roller + istatistikler #}
+      <table class="dash-table">
+        <thead>
+          <tr>
+            <th>Kullanıcı</th>
+            <th>Rol</th>
+            <th>Kayıt</th>
+            <th>Son Aktivite</th>
+            <th>Post</th>
+            <th>Beğeni</th>
+            <th>Yorum</th>
+            <th>Tıklanma</th>
+            <th>İşlem</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for u in users %}
+          <tr>
+            <td>@{{ u.username }}</td>
+                <td>
+                {% if u.role_label == "superadmin" %}
+                    <span class="badge-chip badge-danger">Super Admin</span>
+
+                {% elif u.role_label == "admin" %}
+                    <span class="badge-chip badge-warning">Admin</span>
+
+                {% elif u.role_label == "onaylı yayıncı" %}
+                    <span class="badge-chip badge-success">Onaylı Yayıncı</span>
+
+                {% elif u.role_label == "kulüp admin" %}
+                    <span class="badge-chip badge-info">Kulüp Admin</span>
+
+                {% else %}
+                    <option value="">Rol Yok (Normal User)</option>
+                {% endif %}
+                </td>
+            </td>
+            
+            <td>{{ u.date_joined|localtime|date:"d.m.Y H:i" }}</td>
+
+            <td>
+              {% if u.last_login %}
+                {{ u.last_login|localtime|date:"d.m.Y H:i" }}
+              {% else %}
+                -
+              {% endif %}
+            </td>
+            <td>{{ u.post_count }}</td>
+            <td>{{ u.total_likes_received }}</td>
+            <td>{{ u.total_comments_received }}</td>
+            <td>{{ u.total_views_received }}</td>
+            <td class="table-actions">
+              <a href="#" onclick="openRoleModal({{ u.id }}, '{{ u.username }}'); return false;">Rol Ver</a>
+            </td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="9">Kullanıcı yok.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </article>
+  </section>
+
+  <aside>
+    <section class="side-card">
+      <h3>Not</h3>
+      <p class="side-text">
+        “Son Aktivite” şu an Django’nun <b>last_login</b> alanından geliyor.
+        İstersen gerçek “son görülme” için middleware ekleriz.
+      </p>
+    </section>
+  </aside>
+</div>
+
+{# Rol atama modalı (AJAX ile POST) #}
+<!-- ROL MODAL -->
+<div class="news-modal" id="roleModal">
+  <div class="news-modal-backdrop" onclick="closeRoleModal()"></div>
+
+  <div class="news-modal-dialog">
+    <div class="news-modal-header">
+      <h2>Rol Ata</h2>
+      <p id="roleUserInfo" style="margin:0; opacity:.8;"></p>
+    </div>
+
+    <form id="roleForm" class="news-modal-form">
+      {% csrf_token %}
+
+      <input type="hidden" name="user_id" id="roleUserId">
+
+      <div class="modal-field">
+        <select class="form-control-custom" name="role" id="roleSelect" required>
+          <option value="">Rol Yok (Normal User)</option>
+          <option value="approved_publisher">Onaylı Yayıncı</option>
+          <option value="club_admin">Kulüp Admin</option>
+        </select>
+      </div>
+
+      <button class="btn-primary-custom btn-block" type="submit">Kaydet</button>
+      <button class="btn-outline btn-block" type="button" onclick="closeRoleModal()">Kapat</button>
+    </form>
+  </div>
+</div>
+
+{# Modal açma/kapama ve rol atama AJAX scriptleri #}
+<script>
+function openRoleModal(userId, username){
+  document.getElementById("roleUserId").value = userId;
+  document.getElementById("roleUserInfo").innerText = "@" + username;
+  document.getElementById("roleModal").classList.add("show");
+}
+
+function closeRoleModal(){
+  document.getElementById("roleModal").classList.remove("show");
+}
+
+document.getElementById("roleForm").addEventListener("submit", async function(e){
+  e.preventDefault();
+  const userId = document.getElementById("roleUserId").value;
+  const formData = new FormData(this);
+
+  const res = await fetch(`/admin_dashboard/users/${userId}/role/`, {
+    method: "POST",
+    headers: {
+      "X-CSRFToken": formData.get("csrfmiddlewaretoken"),
+    },
+    body: formData
+  });
+
+  if(res.ok){
+    window.location.reload();
+  }else{
+    alert("Rol güncellenemedi.");
+  }
+});
+</script>
+{% endblock %}

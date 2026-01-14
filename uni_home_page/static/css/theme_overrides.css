@@ -1,0 +1,384 @@
+/* Global apply */
+body{
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+}
+
+/* background effects */
+.un-bg{ position: fixed; inset: 0; z-index: -1; overflow:hidden; }
+.un-glow{ position:absolute; width: 900px; height: 700px; filter: blur(60px); }
+.un-glow.a{ left:-180px; top:-120px; background: radial-gradient(circle at 30% 30%, var(--glowA), transparent 60%); }
+.un-glow.b{ right:-220px; bottom:-160px; background: radial-gradient(circle at 60% 40%, var(--glowB), transparent 65%); }
+.un-noise{
+  position:absolute; inset:-40%;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)' opacity='.18'/%3E%3C/svg%3E");
+  opacity: var(--noiseOpacity);
+  transform: rotate(8deg);
+}
+.un-scanlines{
+  position:absolute; inset:0;
+  background: linear-gradient(to bottom, rgba(255,255,255,.05), rgba(255,255,255,0));
+  background-size: 100% 6px;
+  opacity: var(--scanOpacity);
+  mix-blend-mode: overlay;
+}
+
+/* shared surfaces (cards/panels) */
+.un-card, .lc-panel, .lc-post{
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+/* Accent touches */
+.un-brand-slash{ color: var(--accent); }
+.un-link.active{
+  border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+}
+
+/* ------- THEME PERSONALITIES ------- */
+
+/* LIVE: monospace + sharp + glow border */
+html[data-theme="live"] body{ letter-spacing: .1px; }
+html[data-theme="live"] .un-hint,
+html[data-theme="live"] .lc-stream-head{
+  border-style: dashed;
+}
+html[data-theme="live"] .lc-post-chip,
+html[data-theme="live"] .lc-badge{
+  box-shadow: 0 0 0 1px rgba(34,197,94,.20) inset;
+}
+html[data-theme="live"] .un-action:hover{
+  border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+}
+
+/* UNI: açık + editorial okunabilirlik */
+html[data-theme="uni"] body{
+  background:
+    radial-gradient(900px 600px at 12% 16%, var(--glowA), transparent 55%),
+    radial-gradient(900px 600px at 88% 32%, var(--glowB), transparent 55%),
+    var(--bg);
+  color: var(--text);
+}
+
+/* status/nav/footer: açık ve temiz */
+html[data-theme="uni"] .un-status,
+html[data-theme="uni"] .un-nav,
+html[data-theme="uni"] .un-footer{
+  background: rgba(255,255,255,.70);
+  border-color: rgba(15,23,42,.10);
+  backdrop-filter: blur(14px);
+}
+
+/* linkler ve aktif state */
+html[data-theme="uni"] .un-link{
+  color: rgba(51,65,85,.95);
+}
+html[data-theme="uni"] .un-link:hover{
+  border-color: rgba(29,78,216,.20);
+}
+html[data-theme="uni"] .un-link.active{
+  color: var(--text);
+  border-color: rgba(29,78,216,.28);
+  background: rgba(29,78,216,.06);
+}
+
+/* action butonları açık temaya uygun */
+html[data-theme="uni"] .un-action,
+html[data-theme="uni"] .un-user{
+  background: rgba(255,255,255,.78);
+  border-color: rgba(15,23,42,.12);
+  color: var(--text);
+}
+
+/* sayfa içerik okunabilirliği */
+html[data-theme="uni"] .un-page{
+  padding-top: 22px;
+}
+html[data-theme="uni"] .lc-post,
+html[data-theme="uni"] .lc-panel{
+  box-shadow: 0 10px 28px rgba(2,6,23,.06);
+}
+
+/* yazılar: daha rahat okuma */
+html[data-theme="uni"] .lc-post-desc{
+  color: rgba(51,65,85,.95);
+  line-height: 1.65;
+  font-size: 15.5px;
+}
+html[data-theme="uni"] .lc-post-title{
+  letter-spacing: -0.2px;
+}
+html[data-theme="uni"] .lc-post-title a{
+  color: var(--text);
+}
+html[data-theme="uni"] .lc-post-title a:hover{
+  color: var(--accent);
+}
+
+/* chip/pill daha “kampüs” hissi */
+html[data-theme="uni"] .lc-post-chip{
+  border-color: rgba(15,118,110,.25);
+  background: rgba(15,118,110,.06);
+  color: rgba(15,23,42,.95);
+}
+
+/* focus butonları uni’de sade & premium */
+html[data-theme="uni"] .lc-btn{
+  color:#fff;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  border: none;
+  box-shadow: 0 10px 22px rgba(29,78,216,.16);
+}
+html[data-theme="uni"] .lc-btn.ghost{
+  color: var(--text);
+  background: rgba(255,255,255,.70);
+  border: 1px solid rgba(15,23,42,.12);
+  box-shadow: none;
+}
+
+/* AI input: açık temada beyaz input */
+html[data-theme="uni"] .lc-ai-input input,
+html[data-theme="uni"] .lc-ai-input textarea{
+  background: rgba(255,255,255,.90);
+  border-color: rgba(15,23,42,.12);
+  color: var(--text);
+}
+html[data-theme="uni"] .lc-ai-input input:focus,
+html[data-theme="uni"] .lc-ai-input textarea:focus{
+  border-color: rgba(29,78,216,.35);
+  box-shadow: 0 0 0 6px rgba(29,78,216,.12);
+}
+
+
+/* PAPER: serif + no effects + squared + newspaper vibe */
+html[data-theme="paper"] .un-bg{ display:none; }
+html[data-theme="paper"] .un-brand-mark{ letter-spacing: 0; }
+html[data-theme="paper"] .un-link,
+html[data-theme="paper"] .un-action{
+  border-radius: 8px;
+  background: #fff;
+}
+html[data-theme="paper"] .lc-post,
+html[data-theme="paper"] .lc-panel{
+  box-shadow: none;
+}
+html[data-theme="paper"] .lc-post-media img{
+  filter: grayscale(.15) contrast(1.05);
+}
+
+/* SUNSET: gradient buttons + rounded pill mania */
+html[data-theme="sunset"] .un-nav,
+html[data-theme="sunset"] .un-status,
+html[data-theme="sunset"] .un-footer{
+  background: rgba(10,15,31,.55);
+}
+html[data-theme="sunset"] .lc-btn{
+  color:#120a0a;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  border: none;
+}
+html[data-theme="sunset"] .un-action,
+html[data-theme="sunset"] .un-user{
+  border-radius: 999px;
+}
+
+/* LUX: premium borders, subtle shine */
+html[data-theme="lux"] .un-scanlines{ opacity: calc(var(--scanOpacity) - .02); }
+html[data-theme="lux"] .un-action-admin{
+  border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+}
+html[data-theme="lux"] .lc-post-chip{
+  border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+}
+/* Theme dropdown */
+.un-theme-dd{ position: relative; }
+.un-theme-dd #themeBtn i.bi-chevron-down{ font-size: 12px; opacity:.75; }
+
+.un-theme-menu{
+  position: absolute;
+  right: 0;
+  top: calc(100% + 10px);
+  min-width: 220px;
+  padding: 8px;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  background: color-mix(in srgb, var(--panel) 85%, transparent);
+  backdrop-filter: blur(12px);
+  box-shadow: var(--shadow);
+  display: none;
+  z-index: 999;
+}
+
+.un-theme-dd.open .un-theme-menu{ display:block; }
+
+.un-theme-item{
+  width: 100%;
+  display:flex;
+  align-items:center;
+  gap: 10px;
+  padding: 10px 10px;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  text-align:left;
+}
+
+.un-theme-item:hover{
+  border-color: color-mix(in srgb, var(--accent2) 25%, transparent);
+  background: color-mix(in srgb, var(--accent2) 8%, transparent);
+}
+
+.un-theme-item.active{
+  border-color: color-mix(in srgb, var(--accent) 35%, transparent);
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+}
+
+.un-theme-item .theme-check{
+  opacity: 0;
+  color: var(--accent);
+}
+
+.swatch{
+  width: 14px; height: 14px;
+  border-radius: 99px;
+  border: 1px solid color-mix(in srgb, var(--line) 70%, transparent);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--panel) 70%, transparent);
+}
+
+.swatch.uni{ background: linear-gradient(135deg, #1d4ed8, #0f766e); }
+.swatch.live{ background: linear-gradient(135deg, #22c55e, #0ea5e9); }
+.swatch.paper{ background: linear-gradient(135deg, #111827, #0f766e); }
+.swatch.sunset{ background: linear-gradient(135deg, #fb7185, #f97316); }
+.swatch.lux{ background: linear-gradient(135deg, #fbbf24, #a78bfa); }
+/* ===== UNI PREMIUM (Açık) ===== */
+html[data-theme="uni"] body{
+  background:
+    radial-gradient(900px 600px at 10% 10%, var(--glowA), transparent 60%),
+    radial-gradient(900px 600px at 90% 25%, var(--glowB), transparent 60%),
+    linear-gradient(180deg, rgba(255,255,255,.35), transparent 40%),
+    var(--bg);
+  color: var(--text);
+}
+
+/* live'a özgü noise/scan uni'de kapalı */
+html[data-theme="uni"] .un-noise,
+html[data-theme="uni"] .un-scanlines{ display:none; }
+
+/* üst bar + nav: cam gibi, daha açık */
+html[data-theme="uni"] .un-status,
+html[data-theme="uni"] .un-nav,
+html[data-theme="uni"] .un-footer{
+  background: rgba(255,255,255,.72);
+  border-color: rgba(2,6,23,.08);
+  backdrop-filter: blur(16px);
+}
+
+/* nav linkler daha modern */
+html[data-theme="uni"] .un-link{
+  color: rgba(30,41,59,.88);
+  border-radius: 14px;
+}
+html[data-theme="uni"] .un-link:hover{
+  border-color: rgba(36,87,255,.18);
+  background: rgba(36,87,255,.05);
+}
+html[data-theme="uni"] .un-link.active{
+  border-color: rgba(36,87,255,.22);
+  background: linear-gradient(135deg, rgba(36,87,255,.10), rgba(20,184,166,.08));
+  color: rgba(2,6,23,.95);
+}
+
+/* action/user butonları: beyaz, soft shadow */
+html[data-theme="uni"] .un-action,
+html[data-theme="uni"] .un-user{
+  background: rgba(255,255,255,.88);
+  border-color: rgba(2,6,23,.10);
+  color: rgba(2,6,23,.92);
+  box-shadow: 0 8px 22px rgba(2,6,23,.06);
+}
+html[data-theme="uni"] .un-action:hover,
+html[data-theme="uni"] .un-user:hover{
+  border-color: rgba(36,87,255,.18);
+  transform: translateY(-1px);
+}
+
+/* breadcrumb bar daha şık */
+html[data-theme="uni"] .un-hint{
+  background: rgba(255,255,255,.78);
+  border-style: solid;
+  border-color: rgba(2,6,23,.08);
+}
+
+/* paneller/kartlar: border daha hafif, hover ile yükselsin */
+html[data-theme="uni"] .lc-panel,
+html[data-theme="uni"] .lc-post{
+  border-color: rgba(2,6,23,.08);
+  box-shadow: 0 16px 42px rgba(2,6,23,.07);
+}
+html[data-theme="uni"] .lc-panel:hover,
+html[data-theme="uni"] .lc-post:hover{
+  box-shadow: 0 22px 60px rgba(2,6,23,.10);
+}
+
+/* okuma: metin daha rahat */
+html[data-theme="uni"] .lc-post-desc{
+  color: rgba(51,65,85,.92);
+  line-height: 1.72;
+  font-size: 15.5px;
+}
+
+/* başlıklar: editorial */
+html[data-theme="uni"] .lc-post-title{
+  letter-spacing: -0.35px;
+}
+html[data-theme="uni"] .lc-post-title a{
+  color: rgba(2,6,23,.96);
+}
+html[data-theme="uni"] .lc-post-title a:hover{
+  color: var(--accent);
+}
+
+/* chip’ler: pastel */
+html[data-theme="uni"] .lc-post-chip{
+  border-color: rgba(20,184,166,.25);
+  background: rgba(20,184,166,.08);
+  color: rgba(2,6,23,.88);
+}
+
+/* ana buton: modern gradient */
+html[data-theme="uni"] .lc-btn{
+  color: #ffffff;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  border: none;
+  box-shadow: 0 12px 28px rgba(36,87,255,.18);
+}
+html[data-theme="uni"] .lc-btn:hover{
+  filter: brightness(1.02);
+}
+
+/* ghost buton: soft */
+html[data-theme="uni"] .lc-btn.ghost{
+  color: rgba(2,6,23,.92);
+  background: rgba(255,255,255,.86);
+  border: 1px solid rgba(2,6,23,.10);
+  box-shadow: 0 10px 22px rgba(2,6,23,.06);
+}
+
+/* AI input: temiz white */
+html[data-theme="uni"] .lc-ai-input input,
+html[data-theme="uni"] .lc-ai-input textarea{
+  background: rgba(255,255,255,.92);
+  border-color: rgba(2,6,23,.10);
+  color: rgba(2,6,23,.92);
+}
+html[data-theme="uni"] .lc-ai-input input:focus,
+html[data-theme="uni"] .lc-ai-input textarea:focus{
+  border-color: rgba(36,87,255,.30);
+  box-shadow: 0 0 0 6px rgba(36,87,255,.12);
+}

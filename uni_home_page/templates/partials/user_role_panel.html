@@ -1,0 +1,36 @@
+<p><strong>Kullanıcı:</strong> {{ u.username }}</p>
+<p>Kayıt Tarihi: {{ u.date_joined|date:"d.m.Y H:i" }}</p>
+<p>Son Giriş: {{ u.last_login|date:"d.m.Y H:i" }}</p>
+
+<hr>
+
+<ul class="dash-list">
+    <li>Toplam Haber: {{ post_count }}</li>
+    <li>Toplam Beğeni: {{ like_count }}</li>
+    <li>Toplam Yorum: {{ comment_count }}</li>
+    <li>Toplam Görüntüleme: {{ view_count }}</li>
+</ul>
+
+<hr>
+
+<form method="post" action="{% url 'admin_toggle_user_role' u.id %}">
+    {% csrf_token %}
+
+    <label>
+        <input type="checkbox" name="approved_publisher"
+        {% if u.groups.filter(name='approved_publisher').exists %}checked{% endif %}>
+        Onaylı Yayıncı
+    </label>
+
+    <br>
+
+    <label>
+        <input type="checkbox" name="club_admin"
+        {% if u.groups.filter(name='club_admin').exists %}checked{% endif %}>
+        Kulüp Admini
+    </label>
+
+    <button class="btn-primary-custom btn-block" type="submit">
+        Kaydet
+    </button>
+</form>

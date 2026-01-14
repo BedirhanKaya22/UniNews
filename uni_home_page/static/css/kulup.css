@@ -1,0 +1,302 @@
+/* ----------------------------------------------------
+   SAYFA LAYOUT & BAŞLIK
+---------------------------------------------------- */
+
+.page-two-column {
+    display: grid;
+    grid-template-columns: 3fr 1.2fr;
+    gap: 2rem;
+    margin-top: 1.5rem;
+}
+
+@media (max-width: 992px) {
+    .page-two-column {
+        grid-template-columns: 1fr;
+    }
+}
+
+.page-title {
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin-bottom: 0.3rem;
+}
+
+.page-subtitle {
+    font-size: 0.98rem;
+    color: var(--text-muted);
+    margin-bottom: 1.2rem;
+}
+
+/* ----------------------------------------------------
+   FİLTRE VE ARAMA
+---------------------------------------------------- */
+
+.gundem-filter-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.7rem;
+}
+
+.filter-pills {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.filter-pill {
+    border: none;
+    outline: none;
+    padding: 6px 11px;
+    border-radius: 999px;
+    background: #e5edff;
+    color: #1d4ed8;
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.filter-pill.active {
+    background: #1d4ed8;
+    color: #ffffff;
+}
+
+.search-input-wrapper {
+    margin-bottom: 1.1rem;
+}
+
+.search-input {
+    border-radius: 999px;
+    border: 1px solid #d4d4d8;
+    padding: 0.55rem 0.9rem;
+    font-size: 0.9rem;
+}
+
+/* ----------------------------------------------------
+   KULÜP KARTI
+---------------------------------------------------- */
+
+.club-card {
+    background: #ffffff;
+    border-radius: 18px;
+    box-shadow: var(--shadow-soft);
+    padding: 1rem 1.1rem;
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    align-items: flex-start;
+}
+
+.club-avatar {
+    width: 52px;
+    height: 52px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    color: #ffffff;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+}
+
+/* Farklı kulüp tiplerine göre renkler */
+.club-ai {
+    background: linear-gradient(135deg, #1d4ed8, #22c55e);
+}
+
+.club-music {
+    background: linear-gradient(135deg, #ec4899, #6366f1);
+}
+
+.club-photo {
+    background: linear-gradient(135deg, #0ea5e9, #22c55e);
+}
+
+.club-sport {
+    background: linear-gradient(135deg, #f97316, #ef4444);
+}
+
+.club-avatar i {
+    font-size: 1.3rem;
+}
+
+.club-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+.club-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.7rem;
+    align-items: flex-start;
+}
+
+.club-title {
+    font-size: 1.1rem;
+    margin: 0;
+    color: #111827;
+}
+
+/* Kulüp türü etiketi */
+
+.club-type {
+    padding: 3px 9px;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.club-type.tech {
+    background: #e0f2fe;
+    color: #0369a1;
+}
+
+.club-type.art {
+    background: #fce7f3;
+    color: #be185d;
+}
+
+.club-type.social {
+    background: #fef3c7;
+    color: #b45309;
+}
+
+.club-type.sport {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+/* Açıklama */
+
+.club-desc {
+    font-size: 0.9rem;
+    color: #4b5563;
+}
+
+/* Chip satırı (tagler) */
+
+.chip-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+}
+
+.badge-chip {
+    padding: 3px 8px;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    background: #f3f4f6;
+    color: #4b5563;
+}
+
+/* Alt satır: meta + butonlar */
+
+.club-footer {
+    margin-top: 0.4rem;
+    display: flex;
+    justify-content: space-between;
+    gap: 0.7rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.club-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    font-size: 0.85rem;
+    color: #6b7280;
+}
+
+.club-actions {
+    display: flex;
+    gap: 0.4rem;
+}
+
+/* ----------------------------------------------------
+   SIDEBAR
+---------------------------------------------------- */
+
+.side-card {
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 1.1rem 1.3rem;
+    margin-bottom: 1.4rem;
+    box-shadow: var(--shadow-soft);
+}
+
+.side-card h3 {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: #1f2937;
+}
+
+.side-text {
+    font-size: 0.9rem;
+    color: #4b5563;
+    margin-bottom: 0.7rem;
+}
+
+.simple-list,
+.bullet-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.simple-list li {
+    font-size: 0.9rem;
+    color: #4b5563;
+    margin-bottom: 0.5rem;
+}
+
+.bullet-list li {
+    font-size: 0.9rem;
+    color: #4b5563;
+    margin-bottom: 0.5rem;
+    position: relative;
+    padding-left: 14px;
+}
+
+.bullet-list li::before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: #2563eb;
+}
+
+/* Tam genişlik buton */
+
+.btn-block {
+    width: 100%;
+}
+
+/* Responsive */
+
+@media (max-width: 768px) {
+    .gundem-filter-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .club-card {
+        flex-direction: row;
+        align-items: flex-start;
+    }
+
+    .club-footer {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .club-actions {
+        align-self: flex-start;
+    }
+}

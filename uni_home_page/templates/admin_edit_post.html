@@ -1,0 +1,61 @@
+{# admin_edit_post.html #}
+
+{% extends "base.html" %}
+{# Sayfa, base.html ana şablonunu (layout, navbar, footer) miras alır #}
+
+{% load static %}
+{# Static dosyaları (CSS/JS) çağırabilmek için gerekli #}
+
+{% block title %}İçerik Düzenle | UniNews{% endblock %}
+{# Tarayıcı sekmesinde görünen sayfa başlığı #}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/admin_dashboard.css' %}">
+{# Admin dashboard ile uyumlu özel CSS dosyası #}
+{% endblock %}
+
+{% block content %}
+{# Sayfanın ana içerik bloğu #}
+<div class="dash-card" style="max-width: 900px; margin: 20px auto;">
+  {# İçeriği ortalayan ve kart görünümü veren container #}
+
+  <div class="dash-card-header">
+    {# Kart başlığı alanı #}
+    <h3>İçerik Düzenle</h3>
+    <span class="dash-card-subtitle">{{ post.title }}</span>
+    {# Düzenlenen içeriğin başlığı (view'den gelen post objesi) #}
+  </div>
+
+  {# Django messages framework: success / error / warning mesajları #}
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert-custom alert-{{ message.tags }}">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+
+  {# İçerik düzenleme formu #}
+  <form method="post" enctype="multipart/form-data">
+    {# POST: form gönderimi, multipart: dosya upload (kapak vb.) #}
+    {% csrf_token %}
+    {# CSRF koruması (zorunlu) #}
+
+    {{ form.as_p }}
+    {# Django formu otomatik olarak <p> etiketleriyle render edilir #}
+
+    <div class="table-actions" style="margin-top: 12px;">
+      {# Form aksiyon butonları #}
+      <button class="btn-primary-custom btn-xs" type="submit">
+        Kaydet
+      </button>
+      {# Formu submit ederek değişiklikleri kaydeder #}
+
+      <a class="btn-outline btn-xs" href="{% url 'admin_dashboard' %}">
+        Geri
+      </a>
+      {# Admin dashboard'a geri dönüş linki #}
+    </div>
+  </form>
+</div>
+{% endblock %}

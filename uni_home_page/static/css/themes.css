@@ -1,0 +1,150 @@
+/* Base tokens (fallback) */
+html{
+  --bg:#0b1220;
+  --panel: rgba(255,255,255,.08);
+  --line: rgba(255,255,255,.14);
+  --text:#e5e7eb;
+  --muted:#94a3b8;
+
+  --accent:#22c55e;
+  --accent2:#0ea5e9;
+
+  --radius: 16px;
+  --shadow: 0 18px 60px rgba(0,0,0,.45);
+
+  --noiseOpacity:.06;
+  --scanOpacity:.08;
+  --glowA: rgba(34,197,94,.35);
+  --glowB: rgba(14,165,233,.35);
+
+  --font: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+/* 1) LIVE TERMINAL (neon) */
+html[data-theme="live"]{
+  --bg:#020617;
+  --panel: rgba(6,11,26,.62);
+  --line: rgba(30,41,59,.90);
+  --text:#e5e7eb;
+  --muted:#94a3b8;
+  --accent:#22c55e;
+  --accent2:#0ea5e9;
+  --radius: 14px;
+  --shadow: 0 24px 80px rgba(0,0,0,.55);
+  --noiseOpacity:.08;
+  --scanOpacity:.12;
+  --glowA: rgba(14,165,233,.45);
+  --glowB: rgba(34,197,94,.35);
+  --font: Inter, system-ui, sans-serif;
+}
+
+/* 2) UNI SOFT (üniversite modern) */
+html{
+  /* Default = UNI (açık, editorial, okunaklı) */
+  --bg: #f7f7fb;
+  --panel: rgba(255,255,255,.92);
+  --line: rgba(15,23,42,.10);
+  --text: #0b1220;
+  --muted: #334155;
+
+  /* kampüs vurgu: mavi + teal */
+  --accent: #1d4ed8;
+  --accent2:#0f766e;
+
+  --radius: 18px;
+  --shadow: 0 14px 36px rgba(2,6,23,.08);
+
+  /* efektler uni’de çok hafif */
+  --noiseOpacity: 0;
+  --scanOpacity: 0;
+  --glowA: rgba(29,78,216,.14);
+  --glowB: rgba(15,118,110,.10);
+
+  /* okunabilir font */
+  --font: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+/* UNI explicit */
+html[data-theme="uni"]{
+  --bg: #f4f7ff;
+  --panel: rgba(255,255,255,.94);
+  --line: rgba(2,6,23,.08);
+  --text: #0b1220;
+  --muted:#475569;
+
+  /* modern kampüs: cobalt + teal */
+  --accent:#2457ff;
+  --accent2:#14b8a6;
+
+  --radius: 20px;
+  --shadow: 0 18px 48px rgba(2,6,23,.08);
+
+  /* uni'de efektler çok hafif */
+  --noiseOpacity: 0;
+  --scanOpacity: 0;
+  --glowA: rgba(36,87,255,.14);
+  --glowB: rgba(20,184,166,.10);
+
+  --font: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+
+/* diğer temaların (live/paper/sunset/lux) tanımları sende kalsın */
+
+
+/* 3) NEWS PAPER (gazete/okunabilirlik) */
+html[data-theme="paper"]{
+  --bg:#fcfbf7;
+  --panel:#ffffff;
+  --line: rgba(2,6,23,.14);
+  --text:#0b1220;
+  --muted:#334155;
+  --accent:#111827;
+  --accent2:#0f766e;
+  --radius: 8px;
+  --shadow: 0 10px 28px rgba(2,6,23,.08);
+  --noiseOpacity:0;
+  --scanOpacity:0;
+  --glowA: rgba(0,0,0,0);
+  --glowB: rgba(0,0,0,0);
+  --font: ui-serif, Georgia, "Times New Roman", Times, serif;
+}
+
+/* 4) SUNSET POP (enerjik gradient) */
+html[data-theme="sunset"]{
+  --bg:#0a0f1f;
+  --panel: rgba(255,255,255,.10);
+  --line: rgba(255,255,255,.16);
+  --text:#fff7ed;
+  --muted:#fed7aa;
+  --accent:#fb7185;
+  --accent2:#f97316;
+  --radius: 22px;
+  --shadow: 0 30px 95px rgba(0,0,0,.55);
+  --noiseOpacity:.06;
+  --scanOpacity:.08;
+  --glowA: rgba(249,115,22,.45);
+  --glowB: rgba(251,113,133,.38);
+  --font: Inter, system-ui, sans-serif;
+}
+
+/* 5) MIDNIGHT LUX (premium dark) */
+html[data-theme="lux"]{
+  --bg:#050816;
+  --panel: rgba(255,255,255,.06);
+  --line: rgba(167,139,250,.22);
+  --text:#f5f3ff;
+  --muted:#c4b5fd;
+  --accent:#fbbf24;   /* gold */
+  --accent2:#a78bfa;  /* violet */
+  --radius: 16px;
+  --shadow: 0 34px 110px rgba(0,0,0,.60);
+  --noiseOpacity:.05;
+  --scanOpacity:.07;
+  --glowA: rgba(167,139,250,.32);
+  --glowB: rgba(251,191,36,.20);
+  --font: Inter, system-ui, sans-serif;
+}

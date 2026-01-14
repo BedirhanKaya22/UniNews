@@ -1,0 +1,371 @@
+/* ----------------------------------------------------
+   SAYFA LAYOUT & BAŞLIK
+---------------------------------------------------- */
+
+.page-two-column {
+    display: grid;
+    grid-template-columns: 3fr 1.2fr;
+    gap: 2rem;
+    margin-top: 1.5rem;
+}
+
+@media (max-width: 992px) {
+    .page-two-column {
+        grid-template-columns: 1fr;
+    }
+}
+
+.page-title {
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin-bottom: 0.3rem;
+}
+
+.page-subtitle {
+    font-size: 0.98rem;
+    color: var(--text-muted);
+    margin-bottom: 1.2rem;
+}
+
+/* ----------------------------------------------------
+   FİLTRE VE ARAMA
+---------------------------------------------------- */
+
+.gundem-filter-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.7rem;
+}
+
+.filter-pills {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.filter-pill {
+    border: none;
+    outline: none;
+    padding: 6px 11px;
+    border-radius: 999px;
+    background: #e5edff;
+    color: #1d4ed8;
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.filter-pill.active {
+    background: #1d4ed8;
+    color: #ffffff;
+}
+
+.search-input-wrapper {
+    margin-bottom: 1.1rem;
+}
+
+.search-input {
+    border-radius: 999px;
+    border: 1px solid #d4d4d8;
+    padding: 0.55rem 0.9rem;
+    font-size: 0.9rem;
+}
+
+/* ----------------------------------------------------
+   Etkinlik kartı – modern tasarım
+---------------------------------------------------- */
+
+.news-card.event-card-modern {
+    padding: 0;
+    border-radius: 24px;
+    background: #ffffff;
+    box-shadow: var(--shadow-soft);
+    overflow: hidden;
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+    margin-bottom: 18px;
+}
+
+.news-card.event-card-modern:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 18px 40px rgba(15, 23, 42, 0.12);
+}
+
+/* Üst görsel */
+
+.event-card-modern .event-media {
+    position: relative;
+    height: 210px;
+    overflow: hidden;
+}
+
+.event-card-modern .event-media-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.25s ease;
+}
+
+.event-card-modern:hover .event-media-img {
+    transform: scale(1.05);
+}
+
+/* Görsel üstü chip */
+
+.event-card-modern .event-media-chip {
+    position: absolute;
+    left: 16px;
+    top: 14px;
+}
+
+.event-card-modern .chip-label {
+    padding: 4px 10px;
+    border-radius: var(--radius-pill);
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    background: rgba(15, 23, 42, 0.82);
+    color: #ffffff;
+}
+
+/* İçerik alanı */
+
+.event-card-modern .event-body {
+    padding: 14px 18px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+/* Üst satır: tür + tarih/saat */
+
+.event-card-modern .event-body-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    color: var(--text-muted);
+    gap: 10px;
+}
+
+.event-card-modern .event-tag {
+    padding: 3px 9px;
+    border-radius: var(--radius-pill);
+    background: #dcfce7;
+    color: #15803d;
+    font-weight: 500;
+    font-size: 11px;
+}
+
+.event-card-modern .event-datetime i {
+    margin-right: 3px;
+    font-size: 13px;
+}
+
+.event-card-modern .event-datetime .dot {
+    margin: 0 4px;
+}
+
+/* Başlık */
+
+.event-card-modern .event-title {
+    font-size: 18px;
+}
+
+/* Organizatör + konum satırı */
+
+.event-card-modern .event-organizer-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.event-card-modern .event-organizer i,
+.event-card-modern .event-location i {
+    margin-right: 4px;
+}
+
+.event-card-modern .event-desc {
+    font-size: 14px;
+    color: var(--text-muted);
+}
+
+/* Alt bar: istatistikler + aksiyon */
+
+.event-card-modern .event-body-bottom {
+    margin-top: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    color: var(--text-muted);
+    gap: 10px;
+}
+
+.event-card-modern .event-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.event-card-modern .event-stats i {
+    margin-right: 3px;
+}
+
+.event-card-modern .event-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 12px;
+    border-radius: var(--radius-pill);
+    background: #eef2ff;
+    color: #1d4ed8;
+    font-size: 12px;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.event-card-modern .event-action i {
+    font-size: 17px;
+}
+
+/* Responsive */
+
+@media (max-width: 768px) {
+    .event-card-modern .event-media {
+        height: 180px;
+    }
+
+    .event-card-modern .event-body-top {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .event-card-modern .event-body-bottom {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .event-card-modern .event-action {
+        align-self: flex-end;
+    }
+}
+
+/* ----------------------------------------------------
+   SAĞ TARAF / SIDEBAR
+---------------------------------------------------- */
+
+.side-card {
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 1.1rem 1.3rem;
+    margin-bottom: 1.4rem;
+    box-shadow: var(--shadow-soft);
+}
+
+.side-card h3 {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: #1f2937;
+}
+
+/* Bugünün mini etkinlik listesi */
+
+.event-mini-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.event-mini-list li {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    margin-bottom: 0.7rem;
+}
+
+.mini-date {
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    background: #eef2ff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    color: #1d4ed8;
+    font-weight: 600;
+}
+
+.mini-date .day {
+    font-size: 1rem;
+    line-height: 1;
+}
+
+.mini-info .mini-title {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #111827;
+    font-weight: 600;
+}
+
+.mini-info .mini-meta {
+    margin: 0;
+    font-size: 0.8rem;
+    color: #6b7280;
+}
+
+/* Basit & bullet listeler */
+
+.simple-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.simple-list li {
+    font-size: 0.9rem;
+    color: #4b5563;
+    margin-bottom: 0.5rem;
+}
+
+.bullet-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.bullet-list li {
+    font-size: 0.9rem;
+    color: #4b5563;
+    margin-bottom: 0.5rem;
+    position: relative;
+    padding-left: 14px;
+}
+
+.bullet-list li::before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: #2563eb;
+}
+
+/* Etkinlik tag’leri */
+
+.tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+}
+
+.tag-list span {
+    background: #f1f5f9;
+    color: #2563eb;
+    padding: 4px 9px;
+    border-radius: 999px;
+    font-size: 0.8rem;
+}

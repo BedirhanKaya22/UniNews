@@ -1,0 +1,471 @@
+{# AUTO-YORUMLU SÜRÜM: Orijinal dosya KESİLMEDEN korunmuştur. Yalnızca açıklayıcı yorumlar eklendi. #}
+{# base.html şablonunu miras alır (genel layout). #}
+{% extends 'base.html' %}
+{# static etiketi: CSS/JS gibi statik dosyaları çağırmak için. #}
+{% load static %}
+
+{# Sayfa başlığı (tarayıcı sekmesi). #}
+{% block title %}Yönetim Paneli | UniNews{% endblock %}
+
+{# Bu sayfaya özel CSS dosyası burada eklenir. #}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/admin_dashboard.css' %}">
+{% endblock %}
+
+{# Sayfanın ana içerik bloğu başlar. #}
+{% block content %}
+<div class="page-two-column">
+  <section>
+    <h1 class="page-title">Yönetim Paneli</h1>
+    <p class="page-subtitle">
+      UniNews içeriklerini, kullanıcı aktivitelerini ve bekleyen haber onaylarını buradan yönetebilirsin.
+    </p>
+
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert-custom alert-{{ message.tags }}">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
+
+<!-- Arama / filtreleme / sıralama formu (GET ile) -->
+    <!-- ARAMA / FİLTRE / SIRALAMA -->
+    <article class="dash-card" style="margin-bottom:16px;">
+      <h3>İçerik Filtrele</h3>
+
+{# Filtre formu: q/category/status/sort parametreleri GET ile URL'e eklenir. #}
+      <form method="get" action="{% url 'admin_dashboard' %}">
+        <input type="text" name="q" value="{{ q }}" placeholder="Başlık / içerik / kullanıcı ara...">
+
+        <select name="category">
+          <option value="">Tümü</option>
+          <option value="GUNDEM"   {% if category == "GUNDEM" %}selected{% endif %}>Gündem</option>
+          <option value="ETKINLIK" {% if category == "ETKINLIK" %}selected{% endif %}>Etkinlikler</option>
+          <option value="DUYURU"   {% if category == "DUYURU" %}selected{% endif %}>Duyurular</option>
+          <option value="KULUP"    {% if category == "KULUP" %}selected{% endif %}>Kulüpler & Topluluklar</option>
+        </select>
+
+        <select name="status">
+          <option value="">Tümü</option>
+          <option value="PENDING"  {% if status == "PENDING" %}selected{% endif %}>Onay Bekliyor</option>
+          <option value="APPROVED" {% if status == "APPROVED" %}selected{% endif %}>Onaylandı</option>
+          <option value="REJECTED" {% if status == "REJECTED" %}selected{% endif %}>Reddedildi</option>
+        </select>
+
+        <select name="sort">
+          <option value="new" {% if sort == "new" %}selected{% endif %}>En Yeni</option>
+          <option value="old" {% if sort == "old" %}selected{% endif %}>En Eski</option>
+        </select>
+
+        <button type="submit">Uygula</button>
+        <a href="{% url 'admin_dashboard' %}">Sıfırla</a>
+      </form>
+    </article>
+
+<!-- Dashboard istatistik kartları: view tarafında stats sözlüğünden gelir -->
+    <!-- İSTATİSTİKLER -->
+    <div class="dash-stat-grid">
+      <div class="dash-stat-card">
+        <span class="stat-label">Toplam Haber</span>
+        <span class="stat-value">{{ stats.total_news }}</span>
+      </div>
+      <div class="dash-stat-card">
+        <span class="stat-label">Etkinlik</span>
+        <span class="stat-value">{{ stats.total_events }}</span>
+      </div>
+      <div class="dash-stat-card">
+        <span class="stat-label">Kulüp</span>
+        <span class="stat-value">{{ stats.total_clubs }}</span>
+      </div>
+      <div class="dash-stat-card">
+        <span class="stat-label">Kullanıcı</span>
+        <span class="stat-value">{{ stats.total_users }}</span>
+      </div>
+    </div>
+
+    <div class="dash-stat-grid small">
+      <div class="dash-stat-card">
+        <span class="stat-label">Yorum</span>
+        <span class="stat-value">{{ stats.total_comments }}</span>
+      </div>
+      <div class="dash-stat-card">
+        <span class="stat-label">Beğeni</span>
+        <span class="stat-value">{{ stats.total_likes }}</span>
+      </div>
+      <div class="dash-stat-card">
+        <span class="stat-label">Bekleyen</span>
+        <span class="stat-value">{{ stats.pending_approvals }}</span>
+      </div>
+    </div>
+
+<!-- Onaylı içerikler tablosu: bulk action (reject/delete) yapılır -->
+    <!-- ONAYLI İÇERİKLER -->
+    <article class="dash-card">
+      <h3>Onaylı İçerikler</h3>
+
+{# Toplu işlem formu: seçilen post_ids + action + section backend'e gider. #}
+      <form method="post" action="{% url 'admin_bulk_action' %}">
+        {% csrf_token %}
+{# section=approved: bu form onaylı tabloyu temsil eder. #}
+        <input type="hidden" name="section" value="approved">
+
+        <table class="dash-table">
+          <thead>
+            <tr>
+              <th>
+{# Başlıktaki checkbox: approved grubundaki tüm post_ids checkbox'larını seçer/kaldırır. #}
+                <input type="checkbox" onclick="toggleGroup(this,'approved')">
+              </th>
+              <th>Başlık</th>
+              <th>Gönderen</th>
+              <th>Kategori</th>
+              <th>Tarih</th>
+              <th>İşlem</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {% for post in approved_page %}
+              <tr>
+                <td>
+                  <input type="checkbox" name="post_ids" value="{{ post.id }}" data-group="approved">
+                </td>
+                <td>{{ post.title }}</td>
+                <td>@{{ post.author.username }}</td>
+                <td>{{ post.get_category_display }}</td>
+                <td>{{ post.created_at|date:"d.m.Y H:i" }}</td>
+                <td class="table-actions">
+                  <a href="{% url 'post_detail' post.pk %}">Aç</a>
+                  <a href="{% url 'admin_edit_post' post.pk %}">Düzenle</a>
+                  <a href="{% url 'admin_reject_post' post.pk %}">Arşivle</a>
+                  <a href="{% url 'admin_delete_post' post.pk %}">Sil</a>
+                </td>
+              </tr>
+            {% empty %}
+              <tr><td colspan="6">Onaylı içerik yok.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+        <div style="display:flex; gap:8px; margin-top:12px;">
+          <button type="submit" name="action" value="reject" class="btn-primary-custom btn-sm">
+            Seçilenleri Arşivle
+          </button>
+          <button type="submit" name="action" value="delete" class="btn-outline btn-sm"
+                  onclick="return confirm('Seçilen içerikler kalıcı olarak silinecek. Emin misin?')">
+            Seçilenleri Sil
+          </button>
+        </div>
+      </form>
+
+      <!-- Pagination -->
+      {% if approved_page.paginator.num_pages > 1 %}
+        <div class="pagination-custom" style="margin-top:12px;">
+          {% if approved_page.has_previous %}
+            <a class="btn-outline btn-xs"
+               href="?q={{ q }}&category={{ category }}&status={{ status }}&sort={{ sort }}&page={{ approved_page.previous_page_number }}">
+              Önceki
+            </a>
+          {% endif %}
+
+          <span class="badge-chip">Sayfa {{ approved_page.number }} / {{ approved_page.paginator.num_pages }}</span>
+
+          {% if approved_page.has_next %}
+            <a class="btn-outline btn-xs"
+               href="?q={{ q }}&category={{ category }}&status={{ status }}&sort={{ sort }}&page={{ approved_page.next_page_number }}">
+              Sonraki
+            </a>
+          {% endif %}
+        </div>
+      {% endif %}
+    </article>
+
+<!-- Bekleyen içerikler tablosu: bulk action (approve/reject/delete) -->
+    <!-- BEKLEYEN İÇERİKLER -->
+    <article class="dash-card">
+      <h3>Bekleyen İçerikler</h3>
+
+{# Toplu işlem formu: seçilen post_ids + action + section backend'e gider. #}
+      <form method="post" action="{% url 'admin_bulk_action' %}">
+        {% csrf_token %}
+{# section=pending: bu form bekleyen tabloyu temsil eder. #}
+        <input type="hidden" name="section" value="pending">
+
+        <table class="dash-table">
+          <thead>
+            <tr>
+              <th>
+{# Başlıktaki checkbox: pending grubundaki tüm post_ids checkbox'larını seçer/kaldırır. #}
+                <input type="checkbox" onclick="toggleGroup(this,'pending')">
+              </th>
+              <th>Başlık</th>
+              <th>Gönderen</th>
+              <th>Kategori</th>
+              <th>Tarih</th>
+              <th>İşlem</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {% for item in pending_items %}
+              <tr>
+                <td>
+                  <input type="checkbox" name="post_ids" value="{{ item.id }}" data-group="pending">
+                </td>
+                <td>{{ item.title }}</td>
+                <td>@{{ item.author.username }}</td>
+                <td>{{ item.get_category_display }}</td>
+                <td>{{ item.created_at|date:"d.m.Y H:i" }}</td>
+                <td class="table-actions">
+                  <a href="{% url 'post_detail' item.pk %}">İncele</a>
+                  <a href="{% url 'admin_edit_post' item.pk %}">Düzenle</a>
+                  <a href="{% url 'admin_approve_post' item.pk %}">Onayla</a>
+                  <a href="{% url 'admin_reject_post' item.pk %}">Reddet</a>
+                  <a href="{% url 'admin_delete_post' item.pk %}">Sil</a>
+                </td>
+              </tr>
+            {% empty %}
+              <tr><td colspan="6">Bekleyen içerik yok.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+        <div style="display:flex; gap:8px; margin-top:12px;">
+          <button type="submit" name="action" value="approve" class="btn-primary-custom btn-sm">
+            Seçilenleri Onayla
+          </button>
+
+          <button type="submit" name="action" value="reject" class="btn-outline btn-sm">
+            Seçilenleri Reddet
+          </button>
+
+          <button type="submit" name="action" value="delete" class="btn-outline btn-sm"
+                  onclick="return confirm('Seçilen içerikler kalıcı olarak silinecek. Emin misin?')">
+            Seçilenleri Sil
+          </button>
+        </div>
+      </form>
+    </article>
+
+<!-- Reddedilen içerikler tablosu: bulk action (restore/delete) -->
+    <!-- REDDEDİLEN İÇERİKLER -->
+    <article class="dash-card">
+      <h3>Reddedilen İçerikler</h3>
+
+{# Toplu işlem formu: seçilen post_ids + action + section backend'e gider. #}
+      <form method="post" action="{% url 'admin_bulk_action' %}">
+        {% csrf_token %}
+{# section=rejected: bu form reddedilen tabloyu temsil eder. #}
+        <input type="hidden" name="section" value="rejected">
+
+        <table class="dash-table">
+          <thead>
+            <tr>
+              <th>
+{# Başlıktaki checkbox: rejected grubundaki tüm post_ids checkbox'larını seçer/kaldırır. #}
+                <input type="checkbox" onclick="toggleGroup(this,'rejected')">
+              </th>
+              <th>Başlık</th>
+              <th>Gönderen</th>
+              <th>Kategori</th>
+              <th>Tarih</th>
+              <th>İşlem</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {% for item in rejected_items %}
+              <tr>
+                <td>
+                  <input type="checkbox" name="post_ids" value="{{ item.id }}" data-group="rejected">
+                </td>
+                <td>{{ item.title }}</td>
+                <td>@{{ item.author.username }}</td>
+                <td>{{ item.get_category_display }}</td>
+                <td>{{ item.created_at|date:"d.m.Y H:i" }}</td>
+                <td class="table-actions">
+                  <a href="{% url 'post_detail' item.pk %}">İncele</a>
+                  <a href="{% url 'admin_edit_post' item.pk %}">Düzenle</a>
+                  <a href="{% url 'admin_restore_post' item.pk %}">Geri Al</a>
+                  <a href="{% url 'admin_delete_post' item.pk %}">Sil</a>
+                </td>
+              </tr>
+            {% empty %}
+              <tr><td colspan="6">Reddedilen içerik yok.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+        <div style="display:flex; gap:8px; margin-top:12px;">
+          <button type="submit" name="action" value="restore" class="btn-primary-custom btn-sm">
+            Seçilenleri Geri Al
+          </button>
+          <button type="submit" name="action" value="delete" class="btn-outline btn-sm"
+                  onclick="return confirm('Seçilen içerikler kalıcı olarak silinecek. Emin misin?')">
+            Seçilenleri Sil
+          </button>
+        </div>
+      </form>
+    </article>
+
+<!-- Son eklenen içerikler listesi -->
+    <!-- SON EKLENENLER -->
+    <article class="dash-card">
+      <h3>Son Eklenen İçerikler</h3>
+      <ul class="dash-list">
+        {% for post in latest_news %}
+          <li>
+            <strong>{{ post.title }}</strong>
+            <span>{{ post.get_category_display }} • {{ post.created_at|date:"d.m.Y" }}</span>
+            <a href="{% url 'post_detail' post.pk %}">Aç</a>
+          </li>
+        {% empty %}
+          <li>Henüz içerik yok.</li>
+        {% endfor %}
+      </ul>
+    </article>
+
+<!-- Son yorumlar listesi -->
+    <!-- SON YORUMLAR -->
+    <article class="dash-card">
+      <h3>Son Yorumlar</h3>
+      <ul class="dash-list">
+        {% for c in latest_comments %}
+          <li>
+            <strong>@{{ c.user.username }}</strong>:
+            {{ c.text|truncatechars:80 }}
+          </li>
+        {% empty %}
+          <li>Henüz yorum yok.</li>
+        {% endfor %}
+      </ul>
+    </article>
+
+<!-- Son kullanıcılar listesi -->
+    <!-- SON KULLANICILAR -->
+    <article class="dash-card">
+      <h3>Son Kullanıcılar</h3>
+      <ul class="dash-list">
+        {% for u in latest_users %}
+          <li>
+            {{ u.username }} ({{ u.email }})
+            {% if u.is_staff %}<span class="badge-admin badge-light">admin</span>{% endif %}
+          </li>
+        {% empty %}
+          <li>Kullanıcı yok.</li>
+        {% endfor %}
+      </ul>
+    </article>
+  </section>
+
+<!-- Sağ panel: hızlı işlemler ve kullanıcı yönetimi bağlantıları -->
+  <!-- SAĞ PANEL -->
+  <aside>
+    <section class="side-card">
+      <h3>Hızlı İşlemler</h3>
+      <button class="btn-primary-custom btn-block" onclick="openNewsModal()">
+        Haber Yükle
+      </button>
+    </section>
+
+    <article class="dash-card">
+    <h3>Kullanıcı Yönetimi</h3>
+    <ul class="dash-list">
+        <li>
+            <a href="{% url 'admin_user_roles' %}" class="btn-outline btn-block">
+            Rol Ver
+            </a>
+        </li>
+    </ul>
+    </article>
+  </aside>
+</div>
+
+<!-- Haber yükleme modalı: submit_post URL'ine POST eder -->
+<!-- HABER MODAL -->
+<div class="news-modal" id="newsModal">
+  <div class="news-modal-backdrop" onclick="closeNewsModal()"></div>
+
+  <div class="news-modal-dialog">
+    <div class="news-modal-header">
+      <h2>Haber Yükle</h2>
+    </div>
+
+    <form method="post" action="{% url 'submit_post' %}" enctype="multipart/form-data" class="news-modal-form">
+      {% csrf_token %}
+
+      <div class="modal-field">
+        <input class="form-control-custom" type="text" name="title" placeholder="Başlık" required>
+      </div>
+
+      <div class="modal-field">
+        <select class="form-control-custom" name="category" required>
+          <option value="GUNDEM">Gündem</option>
+          <option value="ETKINLIK">Etkinlikler</option>
+          <option value="DUYURU">Duyurular</option>
+          <option value="KULUP">Kulüpler & Topluluklar</option>
+        </select>
+      </div>
+
+      <div class="modal-field">
+        <textarea class="form-control-custom" name="content" rows="6" placeholder="İçerik" required></textarea>
+      </div>
+
+      <div class="modal-field">
+        <input class="form-control-custom" type="file" name="cover">
+      </div>
+
+      <button class="btn-primary-custom btn-block" type="submit">Gönder</button>
+      <button class="btn-outline btn-block" type="button" onclick="closeNewsModal()">Kapat</button>
+    </form>
+  </div>
+</div>
+<!-- Kullanıcı rol modalı: AJAX ile içerik yüklenir -->
+<!-- KULLANICI ROL MODAL -->
+<div class="news-modal" id="userRoleModal">
+    <div class="news-modal-backdrop" onclick="closeUserRoleModal()"></div>
+
+    <div class="news-modal-dialog" style="max-width:720px;">
+        <h2>Kullanıcı Yetkileri</h2>
+
+        <div id="userRoleContent">
+            <!-- AJAX ile dolacak -->
+        </div>
+
+        <button class="btn-outline btn-block" onclick="closeUserRoleModal()">Kapat</button>
+    </div>
+</div>
+
+<script>
+
+// ===============================
+// Modal ve toplu seçim yardımcı fonksiyonları
+// ===============================
+function openNewsModal() {
+  document.getElementById('newsModal').classList.add('show');
+}
+function closeNewsModal() {
+  document.getElementById('newsModal').classList.remove('show');
+}
+
+function toggleGroup(source, groupName) {
+  document.querySelectorAll('input[name="post_ids"][data-group="' + groupName + '"]').forEach(cb => {
+    cb.checked = source.checked;
+  });
+}
+
+function openUserRoleModal(userId) {
+    fetch(`/admin_dashboard/user/${userId}/roles/`)
+        .then(res => res.text())
+        .then(html => {
+            document.getElementById("userRoleContent").innerHTML = html;
+            document.getElementById("userRoleModal").classList.add("show");
+        });
+}
+
+function closeUserRoleModal() {
+    document.getElementById("userRoleModal").classList.remove("show");
+}
+
+</script>
+{% endblock %}
+
